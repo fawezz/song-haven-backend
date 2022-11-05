@@ -3,7 +3,7 @@ const { Schema, model } = mongoose;
 
 const userSchema = new Schema(
     {
-        name: {
+        firstname: {
             type: String,
             required: true
         },
@@ -13,20 +13,24 @@ const userSchema = new Schema(
         },
         email: {
             type: String,
+            unique: true,
             required: true
         },
         password: {
             type: String,
+            minlength: 8,
             required: true
         },
         gender: {
             type: String,
-            required: true
+            required: false
         },
         role: {
             type: String,
+            default: "Basic",
             required: true
         },
+        
     },
     {
         timestamps: true
