@@ -72,7 +72,7 @@ export async function signin(req, res) {
 }
 
 
-export function putOnce(req, res) {
+export async function modify(req, res) {
     User
     .findByIdAndUpdate(req.params.id, req.body)
     .then(doc1 => {
@@ -89,13 +89,19 @@ export function putOnce(req, res) {
     });
 }
 
-export function remove(req, res) {
-  User
-  .findByIdAndDelete(req.params.id, req.body)
-  .then(doc => {
-    res.status(200).json("Deleted user : ", doc);
-  })
-  .catch(err => {
-      res.status(500).json({ error: err });
-  });
+export async function remove(req, res) {
+  //console.log(req.params);
+  try {
+    const usr = await User
+      .findByIdAndDelete(req.params.id);
+      
+    if(!usr){
+      res.status(404).json({message : "No such user found"})
+    }
+    res.status(200).json({"Deleted user": usr})
+  }
+  catch (err){
+    res.status(500).json({"message" : err})
+    console.log(err);
+  }
 }
