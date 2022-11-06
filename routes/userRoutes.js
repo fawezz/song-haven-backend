@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { signin, signup, modify, remove } from '../controllers/userController.js';
+import { signin, signup, remove, modifyRole } from '../controllers/userController.js';
 import verifyToken from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -15,8 +15,8 @@ router
 
 //Update User
 router
-  .route('/modify/:id')
-  .put(verifyToken, modify);
+  .route('/modifyRole/:id')
+  .put(verifyToken, modifyRole);
 
 //Delete User
 router

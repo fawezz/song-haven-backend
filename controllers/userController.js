@@ -72,21 +72,27 @@ export async function signin(req, res) {
 }
 
 
-export async function modify(req, res) {
-    User
-    .findByIdAndUpdate(req.params.id, req.body)
-    .then(doc1 => {
-        User.findById(req.params.id)
-          .then((doc2) => {
-            res.status(200).json(doc2);
-          })
-          .catch((err) => {
-            res.status(500).json({ error: err });
-          });
-    })
-    .catch(err => {
-        res.status(500).json({ error: err });
+export async function modifyRole(req, res) {
+  const id = req.params.id;
+  const role = req.body.role;
+  try{
+    let usr = await User.findById(id);
+
+    usr.role = role;
+    usr.save((err) => {
+      //Monogodb error checker
+      if (err) {
+        res
+          .status(400)
+          .json({ message: "An error occurred", error: err.message });
+        process.exit(1);
+      }
+      res.status(201).json({ message: "Update successful", usr });
     });
+
+  } catch(err) {
+        res.status(500).json({ error: err });
+  }
 }
 
 export async function remove(req, res) {
