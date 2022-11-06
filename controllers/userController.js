@@ -1,7 +1,7 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import sendEmail from "../middlewares/nodemailMiddleware.js";
 
 export async function signup(req, res) {
 
@@ -33,7 +33,7 @@ export async function signup(req, res) {
               expiresIn: "4h",
             }
           );
-
+            sendEmail(currentUser.email, "new account confirmation ","new account has been created", "132");
       return res.status(200).json({message: "user created", token: newToken, currentUser});
   }catch (err) {
     console.log(err);
