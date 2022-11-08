@@ -95,6 +95,50 @@ export async function modifyRole(req, res) {
   }
 }
 
+export async function modifyPassword(req, res) {
+  const id = req.params.id;
+  const password = req.body.password;
+  try{
+    let usr = await User.findById(id);
+
+    usr.password = await bcrypt.hash(password, 10);
+    usr.save((err) => {
+      if (err) {
+        res
+          .status(400)
+          .json({ message: "An error occurred", error: err.message });
+        process.exit(1);
+      }
+      res.status(201).json({ message: "password changed successfully", usr });
+    });
+
+  } catch(err) {
+        res.status(500).json({ error: err });
+  }
+}
+
+export async function modifyDetails(req, res) {
+  const { id, firstname, lastname, email, role, gender } = req.body;
+  try{
+    let usr = await User.findById(id);
+
+    usr.firstname = firstname;
+    usr.firstname = lastname;
+    usr.save((err) => {
+      if (err) {
+        res
+          .status(400)
+          .json({ message: "An error occurred", error: err.message });
+        process.exit(1);
+      }
+      res.status(201).json({ message: "account details changed successfully", usr });
+    });
+
+  } catch(err) {
+        res.status(500).json({ error: err });
+  }
+}
+
 export async function remove(req, res) {
   //console.log(req.params);
   try {
