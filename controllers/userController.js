@@ -1,27 +1,28 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import sendEmail from "../middlewares/nodemailMiddleware.js";
+import {sendWelcomeEmail, sendOtpEmail} from "../middlewares/nodemailMiddleware.js";
+import generateOTP from "../middlewares/otpMiddleware.js";
 
 export async function signup(req, res) {
 
   try{
-    const { firstname, lastname, email, password, role, gender } = req.body;
+    const { firstname, lastname, email, password} = req.body;
     const oldUser = await User.findOne({email});
 
     if (oldUser) {
-      return res.status(409).send("User Already Exist. Please Login");
+      return res.status(409).send("User Already Exists. Please Login");
     }
 
     const  encryptedPassword = await bcrypt.hash(password, 10);
 
+    const otpCode = generateOTP();
     const currentUser = await User.create({
             firstname: firstname.toLowerCase(),
             lastname: lastname.toLowerCase(),
             email: email.toLowerCase(), 
             password: encryptedPassword,
-            gender,
-            role
+            otpCode: otpCode
           }).catch((err) => {
             res.status(500).json({ error: err });
           });
@@ -33,7 +34,7 @@ export async function signup(req, res) {
               expiresIn: "4h",
             }
           );
-            sendEmail(currentUser.email, "new account confirmation ","new account has been created", "132");
+            sendWelcomeEmail(currentUser.email, currentUser._id);
       return res.status(200).json({message: "user created", token: newToken, currentUser});
   }catch (err) {
     console.log(err);
@@ -41,11 +42,36 @@ export async function signup(req, res) {
 
 }
 
+export async function verifyAccount(req, res) {
+  const id = req.params.id;
+  try{
+    let currentUser = await User.findById(id);
+    if(!currentUser.isVerified){
+      currentUser.isVerified = true;
+      currentUser.save((err) => {
+        if (err) {
+          res
+            .status(400)
+            .json({ message: "An error occurred", error: err.message });
+          process.exit(1);
+        }
+        res.status(200).json({ message: "Your account has been verified successfully"});
+      });
+    }else{
+      res.status(404).json({ message: "link expired"});
+    }
+    
+
+  } catch(err) {
+        res.status(500).json({ error: err });
+  }
+}
+
 
 export async function signin(req, res) {
   try{
     const { email, password} = req.body;
-    const currentUser = await User.findOne({ email });
+    const currentUser = await User.findOne({ 'email': email });
 
     if (currentUser && (await bcrypt.compare(password, currentUser.password))) {
       
@@ -61,59 +87,13 @@ export async function signin(req, res) {
     }
     else{
       if(!currentUser){
-        res.status(400).json({message : "No such user exists"});
+        res.status(400).json({message : "No such user exists, please signUp"});
       }else{
         res.status(401).json({message : "wrong password"});
       }
     }
   } catch (err){
     console.log(err);
-  }
-}
-
-
-export async function modifyRole(req, res) {
-  const id = req.params.id;
-  const role = req.body.role;
-  try{
-    let usr = await User.findById(id);
-
-    usr.role = role;
-    usr.save((err) => {
-      //Monogodb error checker
-      if (err) {
-        res
-          .status(400)
-          .json({ message: "An error occurred", error: err.message });
-        process.exit(1);
-      }
-      res.status(201).json({ message: "Update successful", usr });
-    });
-
-  } catch(err) {
-        res.status(500).json({ error: err });
-  }
-}
-
-export async function modifyPassword(req, res) {
-  const id = req.params.id;
-  const password = req.body.password;
-  try{
-    let usr = await User.findById(id);
-
-    usr.password = await bcrypt.hash(password, 10);
-    usr.save((err) => {
-      if (err) {
-        res
-          .status(400)
-          .json({ message: "An error occurred", error: err.message });
-        process.exit(1);
-      }
-      res.status(201).json({ message: "password changed successfully", usr });
-    });
-
-  } catch(err) {
-        res.status(500).json({ error: err });
   }
 }
 
@@ -155,3 +135,69 @@ export async function remove(req, res) {
     console.log(err);
   }
 }
+
+////////////////////////////////////////////////forgot password Scenario////////////////////////////////
+
+export async function sendCode(req, res) {
+  const email = req.body.email;
+  try{
+    let currentUser = await User.findOne({'email': email});
+    if(currentUser){
+      sendOtpEmail(currentUser.email, currentUser.otpCode);
+      res.status(200).json({ message: "code has been sent to your email"});
+    }else{
+      res.status(404).json({ message: "Invalid email adress"});
+    }
+    
+  } catch(err) {
+        res.status(500).json({ error: err });
+  }
+}
+
+export async function verifyOTP(req, res) {
+  const email = req.body.email;
+  const otp = req.body.otpCode;
+  try{
+    let usr = await User.findOne({ 'email': email },);
+    if(usr && usr.otpCode == otp){
+      const otpNew = generateOTP();
+      usr.otpCode = otpNew;
+      usr.save((err) => {
+        if (err) {
+          res
+            .status(400)
+            .json({ message: "An error occurred", error: err.message });
+          process.exit(1);
+        }
+      });
+      res.status(200).json({ otpVerified : true });
+
+    }else{
+      res.status(401).json({ otpVerified : false });
+    }
+  } catch(err) {
+        res.status(500).json({ error: err });
+  }
+}
+
+export async function createNewPassword(req, res) {
+  const email = req.body.email;
+  const password = req.body.password;
+  try{
+    let usr = await User.findOne({'email': email});
+
+    usr.password = await bcrypt.hash(password, 10);
+    usr.save((err) => {
+      if (err) {
+        res
+          .status(400)
+          .json({ message: "An error occurred", error: err.message });
+        process.exit(1);
+      }
+    });
+    res.status(200).json({ message: "password changed successfully please login"});
+  } catch(err) {
+        res.status(500).json({ error: err });
+  }
+}
+///////////////////////////////////////////////

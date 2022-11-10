@@ -21,16 +21,15 @@ const userSchema = new Schema(
             minlength: 8,
             required: true
         },
-        gender: {
+        otpCode: {
             type: String,
-            required: false
+            required: false,
+            minlength: 4
         },
-        role: {
-            type: String,
-            default: "Basic",
-            required: true
-        },
-        
+        isVerified: {
+            type: Boolean,
+            default: false,
+          },
     },
     {
         timestamps: true

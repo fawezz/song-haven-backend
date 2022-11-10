@@ -3,13 +3,11 @@ import mongoose from 'mongoose';
 import userRoutes from './routes/userRoutes.js';
 import dotenv from"dotenv" ;
 
-
 const app = express();
 const port = process.env.PORT || 9090;
 const portDatabase = 27017;
-const hostname = '127.0.0.1';
+const hostname = process.env.HOSTNAME || '127.0.0.1';
 const databaseName = 'songhaven';
-
 
 dotenv.config();
 
