@@ -2,7 +2,7 @@ import otpGenerator from "otp-generator";
 
 
 const generateOTP = () => {
-    const OTP_LENGTH = 4;
+    const OTP_LENGTH = 5;
     const OTP_CONFIG = {
         digits: true,
         specialChars: false,
