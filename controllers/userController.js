@@ -1,7 +1,8 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import {sendWelcomeEmail, sendOtpEmail} from "../middlewares/nodemailMiddleware.js";
+import {sendWelcomeEmail, sendOtpEmail} 
+from "../middlewares/nodemailMiddleware.js";
 import generateOTP from "../middlewares/otpMiddleware.js";
 
 export async function signup(req, res) {
@@ -22,6 +23,7 @@ export async function signup(req, res) {
             lastname: lastname.toLowerCase(),
             email: email.toLowerCase(), 
             password: encryptedPassword,
+          //  image : req.file.firstname,
             otpCode: otpCode
           }).catch((err) => {
             res.status(500).json({ error: err });
@@ -104,9 +106,8 @@ export async function modifyDetails(req, res) {
 
     usr.firstname = firstname;
     usr.firstname = lastname;
-    if(req.file){
-      usr.image = req.file.path
-  }
+    usr.image = req.file.path
+  
     usr.save((err) => {
       if (err) {
         res
@@ -139,7 +140,7 @@ export async function remove(req, res) {
   }
 }
 
-////////////////////////////////////////////////forgot password Scenario////////////////////////////////
+//////////////////////forgot password Scenario////////////////////////////////
 
 export async function sendCode(req, res) {
   const email = req.body.email;
