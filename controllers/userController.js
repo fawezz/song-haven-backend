@@ -11,7 +11,7 @@ export async function signup(req, res) {
     const oldUser = await User.findOne({email});
 
     if (oldUser) {
-      return res.status(409).send("User Already Exists. Please Login");
+      return res.status(409).json({message: "Email Already Exists"});
     }
 
     const  encryptedPassword = await bcrypt.hash(password, 10);
@@ -24,7 +24,7 @@ export async function signup(req, res) {
             password: encryptedPassword,
             otpCode: otpCode
           }).catch((err) => {
-            res.status(500).json({ error: err });
+            res.status('400').json({ message: err });
           });
 
           const newToken = jwt.sign(
@@ -35,9 +35,10 @@ export async function signup(req, res) {
             }
           );
             sendWelcomeEmail(currentUser.email, currentUser._id);
-      return res.status(200).json({message: "user created", token: newToken, currentUser});
+      return res.status(200).json({message: "account created", token: newToken, currentUser});
   }catch (err) {
     console.log(err);
+    return res.status(500).json({message: err});
   }
 
 }
@@ -70,7 +71,9 @@ export async function verifyAccount(req, res) {
 
 export async function signin(req, res) {
   try{
-    const { email, password} = req.body;
+    const email = req.body.email.toLowerCase()
+    const  password = req.body.password;
+
     const currentUser = await User.findOne({ 'email': email });
 
     if (currentUser && (await bcrypt.compare(password, currentUser.password))) {
@@ -144,7 +147,7 @@ export async function sendCode(req, res) {
     let currentUser = await User.findOne({'email': email});
     if(currentUser){
       sendOtpEmail(currentUser.email, currentUser.otpCode);
-      res.status(200).json({ message: "code has been sent to your email"});
+      res.status(200).json({ message: "Please check your email"});
     }else{
       res.status(404).json({ message: "Invalid email adress"});
     }
@@ -195,9 +198,25 @@ export async function createNewPassword(req, res) {
         process.exit(1);
       }
     });
-    res.status(200).json({ message: "password changed successfully please login"});
+    res.status(200).json({ message: "password changed successfully"});
+  } catch(err) {
+    console.log(err)
+        res.status(500).json({ message: err });
+  }
+}
+///////////////////////////////////////////////VerifyAccount
+export async function ResendWelcomeMail(req, res) {
+  const email = req.body.email;
+  const id = req.body.id
+  try{
+    let currentUser = await User.findOne({'email': email});
+    if(currentUser){
+      sendWelcomeEmail(currentUser.email, currentUser._id);
+      res.status(200).json({ message: "Please check your email"});
+    }else{
+      res.status(404).json({ message: "Invalid email adress"});
+    }
   } catch(err) {
         res.status(500).json({ error: err });
   }
 }
-///////////////////////////////////////////////

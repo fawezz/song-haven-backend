@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { signin, signup, verifyAccount, remove, sendCode ,verifyOTP, createNewPassword, modifyDetails } from '../controllers/userController.js';
+import { signin, signup, verifyAccount, remove, sendCode ,verifyOTP, createNewPassword, modifyDetails, ResendWelcomeMail } from '../controllers/userController.js';
 import verifyToken from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -35,6 +35,10 @@ router
   .route('/forgotPassword/createNewPassword')
   .put(createNewPassword);
 
+//Resend Welcome Mail
+  router
+  .route('/resendWelcomeMail')
+  .post(ResendWelcomeMail);
 //Delete User
 router
   .route('/delete/:id')
