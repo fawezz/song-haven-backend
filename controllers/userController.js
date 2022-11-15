@@ -101,24 +101,28 @@ export async function signin(req, res) {
 }
 
 export async function modifyDetails(req, res) {
-  const { id, firstname, lastname, email, role, gender } = req.body;
+  const { id, firstname, lastname, password, email} = req.body;
   try{
-    let usr = await User.findById(id);
+    let currentUser = await User.findById(id);
 
-    usr.firstname = firstname;
-    usr.firstname = lastname;
-    usr.save((err) => {
+    currentUser.firstname = firstname;
+    currentUser.lastname = lastname;
+    const  encryptedPassword = await bcrypt.hash(password, 10);
+
+    currentUser.password = encryptedPassword;
+
+    currentUser.save((err) => {
       if (err) {
         res
           .status(400)
           .json({ message: "An error occurred", error: err.message });
         process.exit(1);
       }
-      res.status(201).json({ message: "account details changed successfully", usr });
+      res.status(201).json({ message: "account details changed successfully", currentUser });
     });
 
   } catch(err) {
-        res.status(500).json({ error: err });
+        res.status(500).json({ message: err });
   }
 }
 
