@@ -11,7 +11,7 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "HavenSon0 API",
+      title: "HavenSon API",
       version: "1.0.0",
       description: "Haven Song API",
       termsOfService: "http://example.com/terms/",
