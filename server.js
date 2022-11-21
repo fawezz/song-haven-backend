@@ -30,6 +30,7 @@ app.use(cors({
   origin: '*'
 }));
 app.use(express.urlencoded({extended: true}));
+app.use("/img",express.static('uploads/images'));
 app.use("/user", userRoutes);
 
 

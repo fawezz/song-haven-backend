@@ -1,7 +1,9 @@
 import express from 'express';
 
-import { signin, signup, verifyAccount, remove, sendCode ,verifyOTP, createNewPassword, modifyDetails, ResendWelcomeMail } from '../controllers/userController.js';
+import { signin, signup, verifyAccount, remove, sendCode ,verifyOTP, createNewPassword, modifyDetails, ResendWelcomeMail, saveImage } from '../controllers/userController.js';
 import verifyToken from '../middlewares/authMiddleware.js';
+import upload from '../middlewares/uploadImageMiddleware.js';
+import sharp from 'sharp';
 
 const router = express.Router();
 
@@ -20,7 +22,13 @@ router
   //change password  
   router
   .route('/modifyDetails')
-  .put(verifyToken, modifyDetails);
+  //.put(verifyToken, modifyDetails);
+  .put(modifyDetails);
+
+  router
+  .route('/profileImage')
+  //.put(verifyToken, modifyDetails);
+  .post(upload.single("image"), saveImage);
 
 //forgot password  
   router

@@ -30,6 +30,9 @@ const userSchema = new Schema(
             type: Boolean,
             default: false,
           },
+        imageId: {
+            type: String
+          }
     },
     {
         timestamps: true

@@ -7,7 +7,8 @@ import generateOTP from "../middlewares/otpMiddleware.js";
 export async function signup(req, res) {
 
   try{
-    const { firstname, lastname, email, password} = req.body;
+    const { firstname, lastname, password} = req.body;
+    const email = req.body.email.toLowerCase()
     const oldUser = await User.findOne({email});
 
     if (oldUser) {
@@ -22,7 +23,8 @@ export async function signup(req, res) {
             lastname: lastname.toLowerCase(),
             email: email.toLowerCase(), 
             password: encryptedPassword,
-            otpCode: otpCode
+            otpCode: otpCode,
+            imageId: "defaultImage.png"
           }).catch((err) => {
             res.status('400').json({ message: err });
           });
@@ -107,9 +109,11 @@ export async function modifyDetails(req, res) {
 
     currentUser.firstname = firstname;
     currentUser.lastname = lastname;
-    const  encryptedPassword = await bcrypt.hash(password, 10);
+    if(password.length !== 0){
+      const  encryptedPassword = await bcrypt.hash(password, 10);
+      currentUser.password = encryptedPassword;
+    }
 
-    currentUser.password = encryptedPassword;
 
     currentUser.save((err) => {
       if (err) {
@@ -146,7 +150,7 @@ export async function remove(req, res) {
 ////////////////////////////////////////////////forgot password Scenario////////////////////////////////
 
 export async function sendCode(req, res) {
-  const email = req.body.email;
+  const email = req.body.email.toLowerCase();
   try{
     let currentUser = await User.findOne({'email': email});
     if(currentUser){
@@ -162,7 +166,7 @@ export async function sendCode(req, res) {
 }
 
 export async function verifyOTP(req, res) {
-  const email = req.body.email;
+  const email = req.body.email.toLowerCase();
   const otp = req.body.otpCode;
   try{
     let usr = await User.findOne({ 'email': email },);
@@ -188,7 +192,7 @@ export async function verifyOTP(req, res) {
 }
 
 export async function createNewPassword(req, res) {
-  const email = req.body.email;
+  const email = req.body.email.toLowerCase();
   const password = req.body.password;
   try{
     let usr = await User.findOne({'email': email});
@@ -210,7 +214,7 @@ export async function createNewPassword(req, res) {
 }
 ///////////////////////////////////////////////VerifyAccount
 export async function ResendWelcomeMail(req, res) {
-  const email = req.body.email;
+  const email = req.body.email.toLowerCase();
   const id = req.body.id
   try{
     let currentUser = await User.findOne({'email': email});
@@ -224,3 +228,23 @@ export async function ResendWelcomeMail(req, res) {
         res.status(500).json({ error: err });
   }
 }
+
+export async function saveImage(req, res) {
+  console.log("changing image")
+  const email = req.body.email.toLowerCase();
+  try{
+    let currentUser = await User.findOne({'email': email});
+      try {
+        currentUser.imageId = req.file.filename;
+        currentUser.save()
+        res.status(201).json({ message: "Image Uploaded", imageId: req.file.filename});
+   } catch (error) {
+       console.log(error)
+       res.status(400).json({ message: error });
+   }
+    
+  } catch(error) {
+        res.status(500).json({ message: error });
+  }
+}
+
