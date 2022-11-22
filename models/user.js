@@ -32,7 +32,17 @@ const userSchema = new Schema(
           },
         imageId: {
             type: String
-          }
+          },
+          //Owner
+        playlists: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Playlist'
+          }],
+          //Creator
+        songs: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Song'
+          }],
     },
     {
         timestamps: true
