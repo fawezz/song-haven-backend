@@ -20,12 +20,6 @@ cd [emplacement du projet]
 npm install
 npm run server
 
-# Fonctions
-User
-Connexion (POST): http://127.0.0.1:9090/user/signup
-Inscription (POST): http://127.0.0.1:9090/user/signin
-Verifier le compt (GET): http://127.0.0.1:9090/user/verifyAccount/
-ModifierProfil (PUT): localhost:3000/api/user/modifyDetails
 
 
 # Auteurs
