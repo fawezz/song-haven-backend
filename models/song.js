@@ -9,7 +9,7 @@ const songSchema = new Schema(
         },
         duration: {
             type: Number,
-            required: true
+            //required: true
         },
         genre: {
             type: String,
@@ -21,7 +21,8 @@ const songSchema = new Schema(
         },
         isPublished: {
             type: Boolean,
-            required: true
+            required: true,
+            default: true
         },
         creator: {
             type: Schema.Types.ObjectId,

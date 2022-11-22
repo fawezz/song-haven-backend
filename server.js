@@ -1,6 +1,8 @@
 import express, { urlencoded } from 'express';
 import mongoose from 'mongoose';
 import userRoutes from './routes/userRoutes.js';
+import playlistRoutes from './routes/playlistRoutes.js'
+import songRoutes from './routes/songRoutes.js'
 import dotenv from "dotenv" ;
 import cors from "cors";
 
@@ -32,7 +34,8 @@ app.use(cors({
 app.use(express.urlencoded({extended: true}));
 app.use("/img",express.static('uploads/images'));
 app.use("/user", userRoutes);
-
+app.use("/playlist", playlistRoutes);
+app.use("/song", songRoutes);
 
 app.listen(port, () => {
   console.log(`Server running at http://${hostname}:${port}/`);

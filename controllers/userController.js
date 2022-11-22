@@ -103,7 +103,7 @@ export async function signin(req, res) {
 }
 
 export async function modifyDetails(req, res) {
-  const { id, firstname, lastname, password, email} = req.body;
+  const { id, firstname, lastname, password} = req.body;
   try{
     let currentUser = await User.findById(id);
 
