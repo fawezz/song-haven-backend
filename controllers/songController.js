@@ -5,15 +5,15 @@ import user from "../models/user.js";
 
 
 export async function create(req, res) {
-  const { creatorId, title, genre, fileName} = req.body;
+  const { creatorId, title, genre, music} = req.body;
   try{
     const newSong = await Song.create({
         title: title,
         genre: genre,
-        fileName: fileName,
+        fileName: req.file.filename,
         creator: creatorId
       }).catch((err) => {
-        res.status('400').json({ message: err.message });
+        return res.status('400').json({ message: err.message });
       });
     newSong.populate('creator');
     res.status(200).json({ message: "Song created successfully", newSong});
