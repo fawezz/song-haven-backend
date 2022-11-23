@@ -23,7 +23,7 @@ export async function signup(req, res) {
             lastname: lastname.toLowerCase(),
             email: email.toLowerCase(), 
             password: encryptedPassword,
-          //  image : req.file.firstname,
+         
             otpCode: otpCode
           }).catch((err) => {
             res.status(500).json({ error: err });

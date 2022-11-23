@@ -7,41 +7,19 @@ import swaggerUI from 'swagger-ui-express';
 import swaggerJsDoc from 'swagger-jsdoc';
 
 
-const options = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "HavenSon API",
-      version: "1.0.0",
-      description: "Haven Song API",
-      termsOfService: "http://example.com/terms/",
-      contact: {
-        name: "API Support",
-        url: "http://www.exmaple.com/support",
-        email: "support@example.com",
-      },
-    },
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const swaggerDocument = require('./swagger.json')
 
-    servers: [
-      {
-        url: "http://127.0.0.1:9090",
-        description: "My API Documentation",
-      },
-    ],
-  },
-  apis: ["./Routes/*.js"],
-};
+
 const app = express();
 const port = process.env.PORT || 9090;
 const portDatabase = 27017;
 const hostname = process.env.HOSTNAME || '127.0.0.1';
 const databaseName = 'songhaven';
 
-
-const specs = swaggerJsDoc(options);
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
-
-dotenv.config();
+app.use("/api-docs",swaggerUI.serve,swaggerUI.setup(swaggerDocument));
+dotenv.config(); 
 
 mongoose.set('debug', true);
 mongoose.Promise = global.Promise;
