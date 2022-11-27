@@ -10,12 +10,28 @@ const bandSchema = new Schema(
         nbrOfMembers: {
             type: Int,
             required: true
+        },
+        discription:{
+            type : String,
+            require : true
+        },
+
+        imageId: {
+            type: String
+          }
+          /*,
+
+          creator: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
         }
+        */
     },
     {
         timestamps: true
     }
 );
+const Band = mongoose.model('Band', bandSchema)
 
-
-export default model('Band', bandSchema);
+//export default model('Band', bandSchema);
+module.exports = Band

@@ -1,6 +1,8 @@
 import express, { urlencoded } from 'express';
 import mongoose from 'mongoose';
 import userRoutes from './routes/userRoutes.js';
+//import bandRoutes from './routes/bandRoutes.js';
+
 import dotenv from "dotenv" ;
 import cors from "cors";
 import swaggerUI from 'swagger-ui-express';
@@ -39,6 +41,7 @@ app.use(cors({
 }));
 app.use(express.urlencoded({extended: true}));
 app.use("/user", userRoutes);
+//app.use("/band", bandRoutes);
 
 
 app.listen(port, () => {

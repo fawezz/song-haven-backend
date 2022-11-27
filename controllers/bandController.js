@@ -1,58 +1,86 @@
-import band from "../models/band";
-import invitation from "../models/band";
 
-export async function getAllBands (req, res){
-    band.findAll()
-      .then((bands) => res.status(200).json(bands))
-      .catch((error) => res.status(400).json({error}));
+
+/*
+export async function create(req, res) {
+  const { creatorId, name, discription} = req.body;
+  try{
+    const newBand = await band.create({
+        name: name,
+        discription: discription,
+        creator: creatorId
+      }).catch((err) => {
+        return res.status('400').json({ message: err.message });
+      });
+    newBand.populate('creator');
+    res.status(200).json({ message: "Band created successfully", newBand});
+  } catch(err) {
+        res.status(500).json({ error: err.message });
+  }
 }
 
 
-export async function createBand(req, res){
-    var newBand = new band(req.name);
-    newEvent.save(function (err, event) {
-      if (err) {
-         res.send(err); }
-      res.status(200)
-        .json({
-          status: 'success',
-          message: 'Band created successfully'
-        });
-    });
+
+export async function getByUser(req, res) {
+    const userId= req.params.userId;
+  try{
+    let bands = await band.find({'creator': userId}).populate('creator', 'firstname lastname');
+    if (bands.length == 0) {
+      return res.status(404).json({message: "No bands found for this user"});
+    }
+      return res.status(200).json({bands});
+  }catch (err) {
+    console.log(err);
+    return res.status(500).json({message: err.message});
   }
+}
 
+export async function getAll(req, res) {
+  
+  try{
+    let bands = await band.find().limit(20).populate('creator', 'firstname lastname');
 
+    if (bands.length == 0) {
+      return res.status(404).json({message: "No bands found"});
+    }
+      return res.status(200).json({bands});
+  }catch (err) {
+    console.log(err);
+    return res.status(500).json({message: err.message});
+  }
+}
 
-  export async function removeBand(req, res) {
-    //console.log(req.params);
+export async function modify(req, res) {
+  const { bandId, name, description} = req.body;
+  try{
+    let band = await band.findByIdAndUpdate(bandId, {$set:{name: name, description: description}}, {new: true});
+    if(band == null){
+      res.status(404).json({ message: "band not found"});
+    }else{
+      res.status(201).json({ message: "band updated successfully", band});
+    }
+  } catch(err) {
+        res.status(500).json({ message: err.message });
+  }
+}
+
+export async function remove(req, res) {
     try {
-      const bd = await Ba
-        .findByIdAndDelete(req.params.id);
-        
-      if(!usr){
-        res.status(404).json({message : "No such user found"})
+        const band = await band
+          .findByIdAndDelete(req.params.id);
+          
+
+        if(!band){
+          res.status(404).json({message : "band not found"})
+        }
+        res.status(200).json({"Deleted band": band})
       }
-      res.status(200).json({"Deleted user": usr})
-    }
-    catch (err){
-      res.status(500).json({"message" : err})
-      console.log(err);
-    }
+      catch (err){
+        res.status(500).json({"message" : err.message})
+        console.log(err);
+      }
   }
- export async function removeband (req, res) {
-    band.remove({ _id: req.params.band_id }, function (err, result) {
-      if (err) { return err; }
-      res.status(200)
-        .json({
-          status: 'success',
-          message: 'band removed'
-        });
-    });
-  }
-  
-  
 
-
+*/
 
 
 
