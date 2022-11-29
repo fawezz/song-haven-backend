@@ -1,10 +1,22 @@
 import Playlist from "../models/playlist.js";
 import Song from "../models/song.js";
+import User from "../models/user.js";
 
 export async function getByUser(req, res) {
     const userId= req.params.userId;
   try{
-    let playlists = await Playlist.find({'owner': userId}).populate('songs');
+    let playlists = await Playlist.find({'owner': userId})
+    .populate({
+      path: 'songs',
+      model: 'Song',
+      //select: { '_id': 1,'user':1},
+      populate: {
+        path: 'creator',
+        model: 'User',
+        select: {'firstname':1, 'lastname':1}
+      }
+   })
+
 
     if (playlists.length == 0) {
       return res.status(404).json({message: "No playlists found"});
@@ -20,18 +32,30 @@ export async function create(req, res) {
   const { ownerId, title, songs} = req.body;
   try{
     //let owner = await User.findById(userId)
+    console.log(songs)
     const newPlaylist = await Playlist.create({
         title: title,
         owner: ownerId,
         songs: songs
       }).catch((err) => {
-        res.status('400').json({ message: err });
+        console.log(err)
+        return res.status(400).json({ message: err });
       });
+      
 
-    newPlaylist.populate('songs');
-    res.status(200).json({ message: "Playlist created successfully", newPlaylist});
+    newPlaylist.populate({
+      path: 'songs',
+      model: 'Song',
+      populate: {
+        path: 'creator',
+        model: 'User',
+        select: {'firstname':1, 'lastname':1}
+      }
+   });
+
+    return res.status(200).json({ message: "Playlist created successfully", newPlaylist});
   } catch(err) {
-        res.status(500).json({ error: err.message });
+        return res.status(500).json({ error: err.message });
   }
 }
 

@@ -15,9 +15,13 @@ const songSchema = new Schema(
             type: String,
             required: true
         },
-        fileName: {
+        filename: {
             type: String,
             required: true
+        },
+        imageFilename: {
+            type: String,
+            required: false
         },
         isPublished: {
             type: Boolean,

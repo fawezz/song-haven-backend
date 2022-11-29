@@ -26,7 +26,7 @@ export async function signup(req, res) {
             otpCode: otpCode,
             imageId: "defaultImage.png"
           }).catch((err) => {
-            res.status('400').json({ message: err });
+            return res.status('400').json({ message: err });
           });
 
           const newToken = jwt.sign(

@@ -3,6 +3,8 @@ import express from 'express';
 import { create, getByUser, remove, getAll, modify } from '../controllers/songController.js';
 import verifyToken from '../middlewares/authMiddleware.js';
 import uploadSong from '../middlewares/uploadMusicMiddleware.js';
+import upload from '../middlewares/uploadImageMiddleware.js';
+
 
 const router = express.Router();
 
@@ -18,6 +20,7 @@ router
 router
   .route('/create')
   .post(uploadSong.single("music"), create);
+//,upload.single("image")
 
   router
   .route('/modify')

@@ -10,7 +10,7 @@ export async function create(req, res) {
     const newSong = await Song.create({
         title: title,
         genre: genre,
-        fileName: req.file.filename,
+        filename: req.file.filename,
         creator: creatorId
       }).catch((err) => {
         return res.status('400').json({ message: err.message });
@@ -36,9 +36,9 @@ export async function getByUser(req, res) {
   }
 }
 
-export async function getAll(req, res) {
+export async function getAll(req, res) { // ordered by descending creation date
   try{
-    let songs = await Song.find().limit(20).populate('creator', 'firstname lastname');
+    let songs = await Song.find().sort({ createdAt: -1 }).populate('creator', 'firstname lastname');
 
     if (songs.length == 0) {
       return res.status(404).json({message: "No songs found"});
@@ -73,7 +73,8 @@ export async function remove(req, res) {
         if(!song){
           res.status(404).json({message : "song not found"})
         }
-        res.status(200).json({"Deleted song": song})
+        res.status(200).json({ message : "song deleted successfully"})
+        //,"song": song})
       }
       catch (err){
         res.status(500).json({"message" : err.message})
