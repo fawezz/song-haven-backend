@@ -9,8 +9,7 @@ const bandSchema = new Schema(
         },
         nbrOfMembers: {
             type: Number,
-            required: false,
-            default : '56'
+            required: false
         },
         discription:{
             type : String,
