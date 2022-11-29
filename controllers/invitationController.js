@@ -1,5 +1,7 @@
-import invitation from "../models/invitation";
-/////get all invitations//////////////////////////////////
+import invitation from "../models/invitation.js";
+import user from "../models/user.js";
+
+////////////////get all invitations//////////////////////////////////
 
 
 export async function getAllInvitations (req, res){
@@ -13,7 +15,6 @@ export async function getInvById(req,res){
         .then((invitation) => res.status(200).json(invitation))
         .catch ((error) =>  res.status(400).json(invitation))
 
-
 }
 ////////SendInvitation//////////////
 
@@ -21,11 +22,7 @@ export async function getInvById(req,res){
 export async function sendInvitation(req,res){
 
 
-
-
-
-
-
+  
 }
 
 ///////delete Invitation//////

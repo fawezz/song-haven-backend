@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
-
 const invitationSchema = new Schema(
     {
         status: {
@@ -21,6 +20,4 @@ const invitationSchema = new Schema(
         timestamps: true
     }
 );
-
-
 export default model('Invitation', invitationSchema);
