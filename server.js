@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import userRoutes from './routes/userRoutes.js';
 import playlistRoutes from './routes/playlistRoutes.js'
 import songRoutes from './routes/songRoutes.js'
+import likeRoutes from './routes/likeRoutes.js'
 import dotenv from "dotenv" ;
 import cors from "cors";
 
@@ -37,6 +38,7 @@ app.use("/music",express.static('uploads/music'));
 app.use("/user", userRoutes);
 app.use("/playlist", playlistRoutes);
 app.use("/song", songRoutes);
+app.use("/like", likeRoutes);
 
 app.listen(port, () => {
   console.log(`Server running at http://${hostname}:${port}/`);

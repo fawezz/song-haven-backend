@@ -49,6 +49,7 @@ export async function verifyAccount(req, res) {
   const id = req.params.id;
   try{
     let currentUser = await User.findById(id);
+    console.log(currentUser)
     if(!currentUser.isVerified){
       currentUser.isVerified = true;
       currentUser.save((err) => {
@@ -137,7 +138,7 @@ export async function remove(req, res) {
       .findByIdAndDelete(req.params.id);
       
     if(!usr){
-      res.status(404).json({message : "No such user found"})
+      res.status(404).json({"message" : "No such user found"})
     }
     res.status(200).json({"Deleted user": usr})
   }
