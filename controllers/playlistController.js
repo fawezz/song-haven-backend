@@ -90,8 +90,17 @@ export async function removeSong(req, res) {
       if(!song){
         return res.status(404).json({"message" : "song not found"})
       }
-      var playlist = await Playlist.findByIdAndUpdate(playlistId, {$pull : {songs: songId}}, {new: true});
-      res.status(200).json({message: "song removed", playlist})
+      var newPlaylist = await Playlist.findByIdAndUpdate(playlistId, {$pull : {songs: songId}}, {new: true}).populate({
+        path: 'songs',
+        model: 'Song',
+        populate: {
+          path: 'creator',
+          model: 'User',
+          select: {'firstname':1, 'lastname':1}
+        }
+     });
+      
+      res.status(200).json({message: "song removed", newPlaylist})
     }
     catch (err){
       res.status(500).json({"message" : err.message})
@@ -120,9 +129,9 @@ export async function remove(req, res) {
       .findByIdAndDelete(req.params.id);
       
     if(!playlist){
-      res.status(404).json({message : "Playlist not found"})
+      res.status(404).json({"message" : "Playlist not found"})
     }
-    res.status(200).json({"Deleted playlist": playlist})
+    res.status(200).json({"message" : "Deleted playlist"})
   }
   catch (err){
     res.status(500).json({"message" : err})

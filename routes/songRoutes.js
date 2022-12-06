@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { create, getByUser, remove, getAll, modify } from '../controllers/songController.js';
+import { create, getByUser, remove, getAll, modify, searchSongs } from '../controllers/songController.js';
 import verifyToken from '../middlewares/authMiddleware.js';
 import uploadSong from '../middlewares/uploadMusicMiddleware.js';
 import upload from '../middlewares/uploadImageMiddleware.js';
@@ -30,6 +30,10 @@ router
   .route('/delete/:id')
   .delete(remove);
 
+router
+  .route('/search')
+  .post(searchSongs);
+  
 export default router;
 
 

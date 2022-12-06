@@ -82,6 +82,33 @@ export async function remove(req, res) {
       }
   }
 
+  export async function searchSongs(req, res) {
+    try{
+      const { criteria, searchText} = req.body;
+      var songs;
+      if(criteria.toLowerCase() == "title"){
+        songs = await Song.find({ title: new RegExp('.*' + searchText.toLowerCase() + '.*')})
+        .populate('creator', 'firstname lastname');
+      }else{
+        if(criteria.toLowerCase() == "genre"){
+          songs = await Song.find({ genre: new RegExp('.*' + searchText.toLowerCase() + '.*')})
+          .populate('creator', 'firstname lastname');
+        }else{
+          return res.status(404).json({message: "invalid criteria"})
+        }
+      }
+      if (songs.length != 0) {
+        return res.status(200).json({songs});
+      }else{
+        return res.status(200).json({songs});
+      }
+    }
+    catch (err){
+        console.log(err);
+        return res.status(500).json(err.message);
+
+    }
+}
 
 
 
