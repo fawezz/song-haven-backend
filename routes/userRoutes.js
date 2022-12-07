@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { signin, signup, verifyAccount, remove, sendCode ,verifyOTP, createNewPassword, modifyDetails }
+import { signin, signup, verifyAccount, remove, sendCode ,verifyOTP, createNewPassword, modifyDetails, getAll }
 from '../controllers/userController.js';
 import verifyToken from '../middlewares/authMiddleware.js';
 import upload from '../middlewares/Upload.js';
@@ -45,5 +45,8 @@ router
   .route('/delete/:id')
   .delete(verifyToken, remove)
 
+router
+.route("/all",getAll)
+.get(getAll)
   
 export default router;

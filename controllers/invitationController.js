@@ -1,14 +1,6 @@
 import invitation from "../models/invitation.js";
 import user from "../models/user.js";
 
-////////////////get all invitations//////////////////////////////////
-
-
-export async function getAllInvitations (req, res){
-    invitation.findAll()
-      .then((invitations) => res.status(200).json(invitations))
-      .catch((error) => res.status(400).json({error}));
-}
 
 export async function getInvById(req,res){
     invitation.findById()
@@ -28,7 +20,7 @@ export async function sendInvitation(req,res){
 ///////delete Invitation//////
 export async function removeIvitation(req, res) {
     try {
-      const inv = await Invitation
+      const inv = await invitation
         .findByIdAndDelete(req.params.id);
         
       if(!inv){

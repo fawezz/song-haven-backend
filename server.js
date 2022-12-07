@@ -2,6 +2,8 @@ import express, { urlencoded } from 'express';
 import mongoose from 'mongoose';
 import userRoutes from './routes/userRoutes.js';
 import bandRoutes from './routes/bandRoutes.js';
+
+
 import dotenv from "dotenv" ;
 import cors from "cors";
 import swaggerUI from 'swagger-ui-express';
@@ -9,6 +11,7 @@ import swaggerJsDoc from 'swagger-jsdoc';
 
 
 import { createRequire } from "module";
+import e from 'cors';
 const require = createRequire(import.meta.url);
 const swaggerDocument = require('./swagger.json')
 
@@ -41,8 +44,7 @@ app.use(cors({
 app.use(express.urlencoded({extended: true}));
 app.use("/user", userRoutes);
 app.use("/band", bandRoutes );
-
-
+app.use('/img', express.static('uploads'))
 app.listen(port, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });

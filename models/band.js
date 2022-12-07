@@ -9,21 +9,27 @@ const bandSchema = new Schema(
         },
         nbrOfMembers: {
             type: Number,
-            required: false
+            required: false,
+            default : '56'
         },
         discription:{
             type : String,
             require : true
         },
 
-        imageFilename: {
+        image: {
             type: String
           },
 
           creator: {
             type: Schema.Types.ObjectId,
             ref: 'User'
-        }
+        },
+        users: [{
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+          }],
+
         
     },
 
@@ -31,6 +37,6 @@ const bandSchema = new Schema(
         timestamps: true
     }
 );
-const Band = mongoose.model('Band', bandSchema)
+
 
 export default model('Band', bandSchema);

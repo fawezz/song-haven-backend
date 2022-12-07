@@ -204,4 +204,20 @@ export async function createNewPassword(req, res) {
         res.status(500).json({ error: err });
   }
 }
-///////////////////////////////////////////////
+
+
+export async function getAll(req, res) {
+  
+  try{
+    let users = await User.find()
+
+    if (users.length == 0) {
+      return res.status(404).json({message: "No users found"});
+    }
+      return res.status(200).json({users});
+  }catch (err) {
+    console.log(err);
+    return res.status(500).json({message: err.message});
+  }
+}
+

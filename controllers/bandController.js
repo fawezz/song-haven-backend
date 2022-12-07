@@ -1,29 +1,36 @@
 import band from '../models/band.js';
 import user from '../models/user.js';
 import Upload from "../middlewares/Upload.js";
+import { response } from 'express';
 
-export async function create(req, res) {
-  const { creatorId, name, discription, nbrOfMembers} = req.body;
 
-  
-  try{
+
+  export const add = (req, res,next)=>{
+    let bnd = new band({
+      name : req.body.name,
+      discription : req.body.discription,
+      creator : req.body.creatorId,
+    })
+
+    if (req.file){
+      bnd.image = req.file.path
+    }
+    bnd.save()
+    .then(response => {
+      bnd.populate('creator');
+      res.json( { message : 'Band Added successfuly!!'
+
+
+      })
+    })
+    .catch(error => {
+      res.json({
+        message : 'An error occured'
+
+      })
+    })
    
-    const newBand = await band.create({
-        name: name,
-        discription: discription,
-        creator: creatorId,
-       // nbrOfMembers : nbrOfMembers ,
-      }).catch((err) => {
-        return res.status('400').json({ message: err.message });
-      });
-    newBand.populate('creator');
-    res.status(200).json({ message: "Band created successfully", newBand});
-  } catch(err) {
-        res.status(500).json({ error: err.message });
   }
-
-}
-
 export async function getByUser(req, res) {
     const userId= req.params.userId;
   try{
@@ -37,6 +44,8 @@ export async function getByUser(req, res) {
     return res.status(500).json({message: err.message});
   }
 }
+
+
 
 
 export async function getAll(req, res) {
@@ -102,29 +111,26 @@ export async function addUser(req,res){
     }
 }
 
-export async function remove(req, res) {
-    try {
-        const band = await band
-          .findByIdAndDelete(req.params.id);
-          
-
-        if(!band){
-          res.status(404).json({message : "band not found"})
-        }
-        res.status(200).json({"Deleted band": band})
-      }
-      catch (err){
-        res.status(500).json({"message" : err.message})
-        console.log(err);
-      }
-
-  }
+export const remove = (req, res, next) => {
+  let bandId = req.body.bandId
+  band.findByIdAndDelete(band)
+  .then(() => {
+      res.json({
+          message: 'Product deleted'
+      })
+  })
+  .catch(error => {
+      res.json({
+          message: 'error'
+      })
+  })
+}
 
   export async function saveImage(req, res) {
     console.log("changing image")
-    const email = req.body.email.toLowerCase();
+    const name = req.body.name.toLowerCase();
     try{
-      let currentUser = await user.findOne({'email': email});
+      let currentUser = await user.findOne({'name': name});
         try {
           currentUser.imageId = req.file.filename;
           currentUser.save()
