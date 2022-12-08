@@ -3,7 +3,7 @@ import multer from 'multer';
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb){
-        cb(null, 'uploads/')
+        cb(null, 'uploads/images/band')
     },
     filename: function(req, file, cb) {
         let ext = path.extname(file.originalname)
@@ -11,7 +11,7 @@ var storage = multer.diskStorage({
     }
 })
 
-var upload = multer ({
+var uploadBandImage = multer ({
     //dest:'upload',
     storage: storage,
     fileFilter: function(req, file, callback){
@@ -30,5 +30,5 @@ var upload = multer ({
     }
 })
 
-export default upload;
+export default uploadBandImage;
  

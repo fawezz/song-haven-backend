@@ -1,7 +1,7 @@
 import express from 'express';
 import { getAll, getByUser,remove,modify,addUser,saveImage, add}
 from '../controllers/bandController.js';
-import upload from '../middlewares/Upload.js';
+import uploadBandImage from '../middlewares/Upload.js';
 
 const router = express.Router();
 
@@ -20,7 +20,7 @@ router
 
 router
   .route('/createBand')
-  .post(upload.single('image'),add);
+  .post(uploadBandImage.single('image'),add);
 
   router
   .route('/addArtiste')

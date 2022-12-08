@@ -26,9 +26,7 @@ const portDatabase = 27017;
 const hostname = process.env.HOSTNAME || '127.0.0.1';
 const databaseName = 'songhaven';
 
-app.use("/api-docs",swaggerUI.serve,swaggerUI.setup(swaggerDocument));
-dotenv.config(); 
-
+// app.use("/api-docs",swaggerUI.serve,swaggerUI.setup(swaggerDocument));
 dotenv.config();
 
 mongoose.set('debug', true);
@@ -48,7 +46,8 @@ app.use(cors({
   origin: '*'
 }));
 app.use(express.urlencoded({extended: true}));
-app.use("/img",express.static('uploads/images'));
+app.use("/img/user",express.static('uploads/images/user'));
+app.use('/img/band', express.static('uploads/Images/band'))
 app.use("/music",express.static('uploads/music'));
 app.use("/user", userRoutes);
 app.use("/playlist", playlistRoutes);
@@ -56,7 +55,7 @@ app.use("/song", songRoutes);
 app.use("/like", likeRoutes);
 
 app.use("/band", bandRoutes );
-app.use('/img', express.static('uploads'))
+
 app.listen(port, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });

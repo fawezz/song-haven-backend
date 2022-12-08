@@ -3,7 +3,7 @@ import multer from 'multer';
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb){
-        cb(null, 'uploads/images/')
+        cb(null, 'uploads/images/user')
     },
     filename: function(req, file, cb) {
         let ext = path.extname(file.originalname)
@@ -11,7 +11,7 @@ var storage = multer.diskStorage({
     }
 })
 
-var upload = multer ({
+var uploadUserImage = multer ({
     storage: storage,
     fileFilter: function(req, file, callback){
         if(
@@ -30,4 +30,4 @@ var upload = multer ({
     }
 })
 
-export default upload;
+export default uploadUserImage;
