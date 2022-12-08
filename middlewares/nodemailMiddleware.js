@@ -1,4 +1,6 @@
 import nodemailer from "nodemailer";
+import otpMail from "../mail_templates/OTPMail.js";
+import welcomeMail from "../mail_templates/WelcomeMail.js";
 
 
 
@@ -23,17 +25,7 @@ export const sendWelcomeEmail = async (email, link) => {
       from:  process.env.USER,
       to: email,
       subject: "Welcome to SongHaven",
-      html: `
-      <div
-        class="container"
-        style="max-width: 90%; margin: auto; padding-top: 20px"
-      >
-        <h2>Welcome to the club.</h2>
-        <h4>You are officially In ✔</h4>
-        <p style="margin-bottom: 30px;">Pleas click the link below to verify your account</p>
-        <a href="http://${process.env.HOSTNAME}:${process.env.PORT}/user/verifyAccount/${link}"> Click Here</a>
-   </div>
-    `,
+      html: welcomeMail(link),
     });
     console.log("email sent sucessfully");
   } catch (error) {
@@ -63,16 +55,7 @@ export async function sendOtpEmail (email, OTP) {
       from:  process.env.USER,
       to: email,
       subject: "SongHaven OTP code",
-      html: `
-      <div
-        class="container"
-        style="max-width: 90%; margin: auto; padding-top: 20px"
-      >
-        <h2>a request to reset your password has been received.</h2>
-        <h4>Please enter the following code in the app to reset your password ✔</h4>
-        <h1 style="font-size: 40px; letter-spacing: 2px; text-align:center;">${OTP}</h1>
-   </div>
-    `,
+      html: otpMail(OTP),
     });
     console.log("email sent sucessfully");
   } catch (error) {
