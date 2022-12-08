@@ -1,0 +1,146 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "Song heaven documentation",
+      "description": "My User Project Application API",
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "components": {
+      "schemas": {
+        "user": {
+          "properties": {
+            "firstname": {
+              "type": "string",
+              "required": "true"
+            },
+            "lastname": {
+              "type": "string",
+              "required": "true"
+            },
+            "email": {
+              "type": "string",
+              "required": "true"
+            },
+            "password": {
+              "type": "string",
+              "required": "true"
+            },
+            "image": {
+              "type": "string",
+              "required": "false"
+            },
+            "isVerified": {
+              "type": "boolean",
+              "default": "false"
+            },
+            "otp": {
+              "type": "string",
+              "required": "false"
+            }
+          }
+        }
+      }
+    },
+    "host": "localhost:9090",
+    "basePath": "/",
+    "schemes": [
+      "http"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+      "/user/signin": {
+        "post": {
+          "tags": [
+            "Users"
+          ],
+          "summary": "signin",
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstname": {
+                    "type": "string"
+                  },
+                  "lastname": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "/user/signup": {
+        "post": {
+          "tags": [
+            "Users"
+          ],
+          "summary": "signup",
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "schema": {
+                "$ref": "#/components/schemas/user"
+              }
+            }
+          ]
+        }
+      },
+      "/delete/{id}": {
+        "delete": {
+          "summary": "Remove User",
+          "tags": [
+            "User"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "description": "user id",
+              "required": false,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "User was deleted"
+            },
+            "404": {
+              "description": "User was not found"
+            }
+          }
+        }
+      }     
+    }
+  }

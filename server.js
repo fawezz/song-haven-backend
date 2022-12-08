@@ -6,6 +6,19 @@ import songRoutes from './routes/songRoutes.js'
 import likeRoutes from './routes/likeRoutes.js'
 import dotenv from "dotenv" ;
 import cors from "cors";
+import bandRoutes from './routes/bandRoutes.js';
+
+
+
+// import swaggerUI from 'swagger-ui-express';
+// import swaggerJsDoc from 'swagger-jsdoc';
+
+
+// import { createRequire } from "module";
+// import e from 'cors';
+// const require = createRequire(import.meta.url);
+// const swaggerDocument = require('./swagger.json')
+
 
 const app = express();
 const port = process.env.PORT || 9090;
@@ -13,6 +26,8 @@ const portDatabase = 27017;
 const hostname = process.env.HOSTNAME || '127.0.0.1';
 const databaseName = 'songhaven';
 
+app.use("/api-docs",swaggerUI.serve,swaggerUI.setup(swaggerDocument));
+dotenv.config(); 
 
 dotenv.config();
 
@@ -40,6 +55,11 @@ app.use("/playlist", playlistRoutes);
 app.use("/song", songRoutes);
 app.use("/like", likeRoutes);
 
+app.use("/band", bandRoutes );
+app.use('/img', express.static('uploads'))
 app.listen(port, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
+
+
+
