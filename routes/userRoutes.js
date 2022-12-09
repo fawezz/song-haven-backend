@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { signin, signup, verifyAccount, remove, sendCode ,verifyOTP, createNewPassword, modifyDetails, ResendWelcomeMail, saveImage } from '../controllers/userController.js';
+import { signin, signup, verifyAccount, remove, sendCode ,verifyOTP, createNewPassword, modifyDetails, ResendWelcomeMail, saveImage, searchByName } from '../controllers/userController.js';
 import verifyToken from '../middlewares/authMiddleware.js';
 import uploadUserImage from '../middlewares/uploadImageMiddleware.js';
 import sharp from 'sharp';
@@ -47,10 +47,14 @@ router
   router
   .route('/resendWelcomeMail')
   .post(ResendWelcomeMail);
+
 //Delete User
 router
   .route('/delete/:id')
   .delete(verifyToken, remove)
 
+  router
+  .route('/searchByName')
+  .post(searchByName);
   
 export default router;

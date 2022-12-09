@@ -249,3 +249,18 @@ export async function saveImage(req, res) {
   }
 }
 
+export async function searchByName(req, res) {
+  try{
+    const {searchText} = req.body;
+    var users;
+      users = await User.find({$or:[{ firstname: new RegExp('.*' + searchText.toLowerCase() + '.*')}, 
+      {lastname: new RegExp('.*' + searchText.toLowerCase() + '.*')}]});
+      
+    return res.status(200).json({users});
+  }
+  catch (err){
+      console.log(err.message);
+      return res.status(500).json(err.message);
+  }
+}
+
