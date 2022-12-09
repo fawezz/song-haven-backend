@@ -34,7 +34,7 @@ import { response } from 'express';
 export async function getByUser(req, res) {
     const userId= req.params.userId;
   try{
-    let bands = await band.find({'creator': userId}).populate('creator', 'firstname lastname');
+    let bands = await band.find({'creator': userId}).populate('creator', 'firstname lastname').populate("");
     if (bands.length == 0) {
       return res.status(404).json({message: "No bands found for this user"});
     }
@@ -111,21 +111,21 @@ export async function addUser(req,res){
     }
 }
 
-export const remove = (req, res, next) => {
-  let bandId = req.body.bandId
-  band.findByIdAndDelete(band)
-  .then(() => {
-      res.json({
-          message: 'Product deleted'
-      })
-  })
-  .catch(error => {
-      res.json({
-          message: 'error'
-      })
-  })
+export async function remove(req, res) {
+  try {
+    const bnd = await band
+      .findByIdAndDelete(req.params.id);
+      
+    if(!bnd){
+      res.status(404).json({"message" : "Band not found"})
+    }
+    res.status(200).json({"message" : "Deleted band"})
+  }
+  catch (err){
+    res.status(500).json({"message" : err})
+    console.log(err);
+  }
 }
-
   export async function saveImage(req, res) {
     console.log("changing image")
     const name = req.body.name.toLowerCase();
