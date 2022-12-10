@@ -3,8 +3,6 @@ import user from '../models/user.js';
 import Upload from "../middlewares/Upload.js";
 import { response } from 'express';
 
-
-
   export const add = (req, res,next)=>{
     let bnd = new band({
       name : req.body.name,
@@ -63,48 +61,42 @@ export async function getAll(req, res) {
   }
 }
 
-
+  
 export async function modify(req, res) {
-    const { id, name, discription} = req.body;
-    try{
-      let bnd = await band.findById(id);
-  
-      bnd.name = name;
-      bnd.discription = discription;
-      bnd.imageFilename = req.file.imageFilename
-    
-      bnd.save((err) => {
-        if (err) {
-          res
-            .status(400)
-            .json({ message: "An error occurred", error: err.message });
-          process.exit(1);
-        }
-        res.status(201).json({ message: "band details changed successfully", bnd });
-      });
-  
-    } catch(err) {
-          res.status(500).json({ error: err });
+  const { bandId, name,discription,image} = req.body;
+  try{
+    let bnd = await band.findByIdAndUpdate(bandId,
+       {$set:{
+        name,
+        discription,
+        image}});
+ 
+    if(bnd == null){
+      res.status(404).json({ message: "band not found"});
+    }else{
+      res.status(201).json({ message: "band updated successfully", bnd });
     }
+  } catch(err) {
+        res.status(500).json({ message: err });
   }
-  
+}
 
 export async function addUser(req,res){
     try{
         const bandId = req.body.bandId
         const  userId = req.body.userId;
 
-        const band = await band.findByIdAndUpdate(bandId, {$addToSet: {Users: userId}}, {new: true});
-        if(!band){
+        const bnd = await band.findByIdAndUpdate(bandId, {$addToSet: {Users: userId}}, {new: true});
+        if(!bnd){
             res.status(404).json({message : "user not found"});
         }
-        band.save((err) => {
+        bnd.save((err) => {
             if (err) {
             return res.status(400).json({ message: "An error occurred", error: err.message });
             }
         });
 
-        return res.status(200).json({message : "user Added Successfully", band});
+        return res.status(200).json({message : "user Added Successfully", bnd});
     }
     catch (err){
         console.log(err);
@@ -144,6 +136,3 @@ export async function remove(req, res) {
           res.status(500).json({ message: error });
     }
   }
-
-
-

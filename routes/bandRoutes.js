@@ -24,7 +24,7 @@ router
 
   router
   .route('/addArtiste')
-  .post(addUser)
+  .put(addUser)
 
 router
     .route('/delete/:id')
