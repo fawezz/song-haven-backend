@@ -264,3 +264,18 @@ export async function searchByName(req, res) {
   }
 }
 
+export async function getById(req, res) {
+  try{
+    const {userId} = req.body;
+    var user = await User.findById(userId);
+    if(user){
+      return res.status(200).json({user});
+    }else{
+      return res.status(404).json({message : "user not found"});
+    }
+  }
+  catch (err){
+      console.log(err.message);
+      return res.status(500).json(err.message);
+  }
+}

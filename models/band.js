@@ -21,7 +21,7 @@ const bandSchema = new Schema(
             type: String
           },
 
-          creator: {
+        creator: {
             type: Schema.Types.ObjectId,
             ref: 'User'
         },

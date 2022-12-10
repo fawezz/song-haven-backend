@@ -47,7 +47,7 @@ app.use(cors({
 }));
 app.use(express.urlencoded({extended: true}));
 app.use("/img/user",express.static('uploads/images/user'));
-app.use('/img/band', express.static('uploads/Images/band'))
+app.use('/img/band', express.static('uploads/images/band'))
 app.use("/music",express.static('uploads/music'));
 app.use("/user", userRoutes);
 app.use("/playlist", playlistRoutes);
