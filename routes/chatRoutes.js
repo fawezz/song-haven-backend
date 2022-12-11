@@ -15,11 +15,11 @@ router
 
 router
   .route('/addMessage')
-  .put(addMessage);
+  .post(addMessage);
 
 router
-  .route('/removeMessage')
-  .put(removeMessage)
+  .route('/removeMessage/:textMessageId')
+  .delete(removeMessage)
 
 router
   .route('/delete/:id')

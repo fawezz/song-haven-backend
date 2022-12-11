@@ -1,138 +1,129 @@
-import band from '../models/band.js';
+import Band from '../models/band.js';
 import user from '../models/user.js';
-import Upload from "../middlewares/Upload.js";
-import { response } from 'express';
 
-  export const add = (req, res,next)=>{
-    let bnd = new band({
-      name : req.body.name,
-      discription : req.body.discription,
-      creator : req.body.creatorId,
-    })
+export const add = (req, res) => {
+  let bnd = new Band({
+    name: req.body.name,
+    discription: req.body.discription,
+    creator: req.body.creatorId,
+  })
 
-    if (req.file){
-      bnd.image = req.file.path
-    }
-    bnd.save()
+  if (req.file) {
+    bnd.image = req.file.path
+  }
+  bnd.save()
     .then(response => {
       bnd.populate('creator');
-      res.json( { message : 'Band Added successfuly!!'
-
-
-      })
+      res.json({ message: 'Band Added successfuly!!' })
     })
     .catch(error => {
       res.json({
-        message : 'An error occured'
-
+        message: 'An error occured'
       })
     })
-   
-  }
+
+}
 export async function getByUser(req, res) {
-    const userId= req.params.userId;
-  try{
-    let bands = await band.find({'creator': userId}).populate('creator', 'firstname lastname').populate("");
+  const userId = req.params.userId;
+  try {
+    let bands = await Band.find({ 'creator': userId }).populate('creator', 'firstname lastname').populate("");
     if (bands.length == 0) {
-      return res.status(404).json({message: "No bands found for this user"});
+      return res.status(404).json({ message: "No bands found for this user" });
     }
-      return res.status(200).json({bands});
-  }catch (err) {
+    return res.status(200).json({ bands });
+  } catch (err) {
     console.log(err);
-    return res.status(500).json({message: err.message});
+    return res.status(500).json({ message: err.message });
   }
 }
-
-
-
 
 export async function getAll(req, res) {
-  
-  try{
-    let bands = await band.find().limit(20).populate('creator', 'firstname lastname');
+  try {
+    let bands = await Band.find().limit(20).populate('creator', 'firstname lastname');
 
     if (bands.length == 0) {
-      return res.status(404).json({message: "No bands found"});
+      return res.status(404).json({ message: "No bands found" });
     }
-      return res.status(200).json({bands});
-  }catch (err) {
+    return res.status(200).json({ bands });
+  } catch (err) {
     console.log(err);
-    return res.status(500).json({message: err.message});
+    return res.status(500).json({ message: err.message });
   }
 }
 
-  
 export async function modify(req, res) {
-  const { bandId, name,discription,image} = req.body;
-  try{
-    let bnd = await band.findByIdAndUpdate(bandId,
-       {$set:{
-        name,
-        discription,
-        image}});
- 
-    if(bnd == null){
-      res.status(404).json({ message: "band not found"});
-    }else{
-      res.status(201).json({ message: "band updated successfully", bnd });
+  const { bandId, name, discription, image } = req.body;
+  try {
+    let band = await Band.findByIdAndUpdate(bandId,
+      {
+        $set: {
+          name,
+          discription,
+          image
+        }
+      });
+    if (band == null) {
+      res.status(404).json({ message: "band not found" });
+    } else {
+      res.status(201).json({ message: "band updated successfully", band });
     }
-  } catch(err) {
-        res.status(500).json({ message: err });
+  } catch (err) {
+    res.status(500).json({ message: err });
   }
 }
 
-export async function addUser(req,res){
-    try{
-        const bandId = req.body.bandId
-        const  userId = req.body.userId;
+export async function addUser(req, res) {
+  try {
+    const bandId = req.body.bandId
+    const userId = req.body.userId;
 
-        const bnd = await band.findByIdAndUpdate(bandId, {$addToSet: {Users: userId}}, {new: true});
-        if(!bnd){
-            res.status(404).json({message : "user not found"});
-        }
-        bnd.save((err) => {
-            if (err) {
-            return res.status(400).json({ message: "An error occurred", error: err.message });
-            }
-        });
+    const band = await Band.findByIdAndUpdate(bandId, { $addToSet: { Users: userId } }, { new: true });
+    if (!band) {
+      res.status(404).json({ message: "user not found" });
+    }
+    band.save((err) => {
+      if (err) {
+        return res.status(400).json({ message: "An error occurred", error: err.message });
+      }
+    });
 
-        return res.status(200).json({message : "user Added Successfully", bnd});
-    }
-    catch (err){
-        console.log(err);
-    }
+    return res.status(200).json({ message: "user Added Successfully", band });
+  }
+  catch (err) {
+    console.log(err);
+  }
 }
 
 export async function remove(req, res) {
   try {
-    const bnd = await band
+    const band = await Band
       .findByIdAndDelete(req.params.id);
-      
-    if(!bnd){
-      res.status(404).json({"message" : "Band not found"})
+
+    if (!band) {
+      res.status(404).json({ "message": "Band not found" })
     }
-    res.status(200).json({"message" : "Deleted band"})
+    res.status(200).json({ "message": "Deleted band" })
   }
-  catch (err){
-    res.status(500).json({"message" : err})
+  catch (err) {
+    res.status(500).json({ "message": err })
     console.log(err);
   }
 }
-  export async function saveImage(req, res) {
-    console.log("changing image")
-    const name = req.body.name.toLowerCase();
-    try{
-      let currentUser = await user.findOne({'name': name});
-        try {
-          currentUser.imageId = req.file.filename;
-          currentUser.save()
-          res.status(201).json({ message: "Image Uploaded", imageId: req.file.filename});
-     } catch (error) {
-         console.log(error)
-         res.status(400).json({ message: error });
-     }
-      
-    } catch(error) {
-          res.status(500).json({ message: error });
+export async function saveImage(req, res) {
+  console.log("changing image")
+  const name = req.body.name.toLowerCase();
+  try {
+    let currentUser = await user.findOne({ 'name': name });
+    try {
+      currentUser.imageId = req.file.filename;
+      currentUser.save()
+      res.status(201).json({ message: "Image Uploaded", imageId: req.file.filename });
+    } catch (error) {
+      console.log(error.message)
+      res.status(400).json({ message: error.message });
     }
+
+  } catch (error) {
+    res.status(500).json({ message: error });
   }
+}

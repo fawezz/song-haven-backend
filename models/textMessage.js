@@ -22,7 +22,7 @@ const textMessageSchema = new Schema(
     }
 );
 
-playlistSchema.methods.toJSON = function() {
+textMessageSchema.methods.toJSON = function() {
     var obj = this.toObject();
     return obj;
    }

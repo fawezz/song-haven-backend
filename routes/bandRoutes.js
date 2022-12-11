@@ -1,18 +1,16 @@
 import express from 'express';
-import { getAll, getByUser,remove,modify,addUser,saveImage, add}
-from '../controllers/bandController.js';
+import { getAll, getByUser, remove, modify, addUser, add } from '../controllers/bandController.js';
 import uploadBandImage from '../middlewares/Upload.js';
 
 const router = express.Router();
 
 router
-.route('/getAllBand')
-.get(getAll);
-
+  .route('/getAllBand')
+  .get(getAll);
 
 router
-.route('/getByUser/:id')
-.get(getByUser);
+  .route('/getByUser/:id')
+  .get(getByUser);
 
 router
   .route('/modify')
@@ -20,15 +18,15 @@ router
 
 router
   .route('/createBand')
-  .post(uploadBandImage.single('image'),add);
+  .post(uploadBandImage.single('image'), add);
 
-  router
+router
   .route('/addArtiste')
   .put(addUser)
 
 router
-    .route('/delete/:id')
-    .delete(remove);
+  .route('/delete/:id')
+  .delete(remove);
 
-  export default router;
+export default router;
 

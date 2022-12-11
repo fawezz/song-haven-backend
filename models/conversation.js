@@ -8,11 +8,11 @@ const conversationSchema = new Schema(
             ref: 'Band',
             required: true
         },
-        textMessages: {
+        textMessages: [{
             type: Schema.Types.ObjectId,
-            ref: 'Message'
-        },
-                // users: [{
+            ref: 'TextMessage'
+        }],
+        // users: [{
         //     type: Schema.Types.ObjectId,
         //     ref: 'User',
         // }],
@@ -22,7 +22,7 @@ const conversationSchema = new Schema(
     }
 );
 
-playlistSchema.methods.toJSON = function() {
+conversationSchema.methods.toJSON = function() {
     var obj = this.toObject();
     return obj;
    }

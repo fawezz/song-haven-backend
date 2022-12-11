@@ -7,20 +7,13 @@ const bandSchema = new Schema(
             type: String,
             required: true
         },
-        nbrOfMembers: {
-            type: Number,
-            required: false,
-            default : '56'
+        discription: {
+            type: String,
+            required: true
         },
-        discription:{
-            type : String,
-            require : true
-        },
-
         image: {
             type: String
-          },
-
+        },
         creator: {
             type: Schema.Types.ObjectId,
             ref: 'User'
@@ -28,15 +21,19 @@ const bandSchema = new Schema(
         users: [{
             type: Schema.Types.ObjectId,
             ref: 'User',
-          }],
-
-        
+        }],
     },
 
     {
         timestamps: true
     }
 );
+
+bandSchema.methods.toJSON = function() {
+    var obj = this.toObject();
+    delete obj.timestamps;
+    return obj;
+   }
 
 
 export default model('Band', bandSchema);
