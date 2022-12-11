@@ -9,7 +9,7 @@ router
   .get(getAll);
 
 router
-  .route('/getByUser/:id')
+  .route('/getByUser/:userId')
   .get(getByUser);
 
 router

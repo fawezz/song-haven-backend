@@ -1,34 +1,41 @@
 import Band from '../models/band.js';
-import user from '../models/user.js';
+import User from '../models/user.js';
 
 export const add = (req, res) => {
-  let bnd = new Band({
+  let band = new Band({
     name: req.body.name,
     discription: req.body.discription,
     creator: req.body.creatorId,
   })
 
   if (req.file) {
-    bnd.image = req.file.path
+    band.image = req.file.path
   }
-  bnd.save()
+  band.save()
     .then(response => {
-      bnd.populate('creator');
-      res.json({ message: 'Band Added successfuly!!' })
+      band.populate('creator');
+      res.json({ message: 'Band Added successfuly!!', band })
     })
     .catch(error => {
       res.json({
         message: 'An error occured'
       })
     })
-
 }
+//getByMember
 export async function getByUser(req, res) {
   const userId = req.params.userId;
+  // console.log(userId)
   try {
-    let bands = await Band.find({ 'creator': userId }).populate('creator', 'firstname lastname').populate("");
+    var user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "user not found" })
+    }
+
+    let bands = await Band.find({ 'id': user.id })
+      .populate('users', 'firstname lastname imageId');
     if (bands.length == 0) {
-      return res.status(404).json({ message: "No bands found for this user" });
+      return res.status(404).json({ bands: [] });
     }
     return res.status(200).json({ bands });
   } catch (err) {
@@ -107,23 +114,5 @@ export async function remove(req, res) {
   catch (err) {
     res.status(500).json({ "message": err })
     console.log(err);
-  }
-}
-export async function saveImage(req, res) {
-  console.log("changing image")
-  const name = req.body.name.toLowerCase();
-  try {
-    let currentUser = await user.findOne({ 'name': name });
-    try {
-      currentUser.imageId = req.file.filename;
-      currentUser.save()
-      res.status(201).json({ message: "Image Uploaded", imageId: req.file.filename });
-    } catch (error) {
-      console.log(error.message)
-      res.status(400).json({ message: error.message });
-    }
-
-  } catch (error) {
-    res.status(500).json({ message: error });
   }
 }
