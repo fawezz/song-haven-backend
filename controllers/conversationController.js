@@ -70,19 +70,15 @@ export async function getByBand(req, res) {
     }
 }
 
-export async function addMessage(req, res) {
+export async function addMessage(senderId, text, conversationId) {
     try {
-        const conversationId = req.body.conversationId
-        const senderId = req.body.senderId;
-        const text = req.body.text;
 
         const textMessage = await TextMessage.create({
             conversation: conversationId,
             sender: senderId,
             text: text
         }).catch((err) => {
-            console.log(err)
-            return res.status(400).json({ message: err.message });
+            console.log(err.message)
         });
 
         textMessage.populate('sender', 'firstname lastname imageId');
@@ -93,13 +89,13 @@ export async function addMessage(req, res) {
             { new: true });
 
         if (!conversation) {
-            res.status(404).json({ message: "conversation not found" });
+            console.log("conversation not found")
         }
 
-        return res.status(200).json({ textMessage });
+        return textMessage;
     }
     catch (err) {
-        console.log(err);
+        console.log(err.message);
     }
 }
 
@@ -108,10 +104,10 @@ export async function removeMessage(req, res) {
     //console.log(textMessageId);
 
     try {
-          let textMessage = await TextMessage.findById(textMessageId);
-          if(!textMessage){
-            return res.status(404).json({"message" : "text message not found"})
-          }
+        let textMessage = await TextMessage.findById(textMessageId);
+        if (!textMessage) {
+            return res.status(404).json({ "message": "text message not found" })
+        }
         var conversation = await Conversation.findByIdAndUpdate(textMessage.conversation, { $pull: { textMessages: textMessageId } }, { new: true }).populate({
             path: 'textMessages',
             model: 'TextMessage'

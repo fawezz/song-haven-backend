@@ -5,10 +5,13 @@ import playlistRoutes from './routes/playlistRoutes.js'
 import songRoutes from './routes/songRoutes.js'
 import likeRoutes from './routes/likeRoutes.js'
 import chatRoutes from './routes/chatRoutes.js'
-import {Server} from 'socket.io'
-import dotenv from "dotenv" ;
+import { Server } from 'socket.io'
+import dotenv from "dotenv";
 import cors from "cors";
+import http from "http"
 import bandRoutes from './routes/bandRoutes.js';
+import { addMessage } from './controllers/conversationController.js';
+
 
 
 // import swaggerUI from 'swagger-ui-express';
@@ -43,22 +46,32 @@ app.use(express.json());
 app.use(cors({
   origin: '*'
 }));
-app.use(express.urlencoded({extended: true}));
-app.use("/img/user",express.static('uploads/images/user'));
+app.use(express.urlencoded({ extended: true }));
+app.use("/img/user", express.static('uploads/images/user'));
 app.use('/img/band', express.static('uploads/images/band'))
-app.use("/music",express.static('uploads/music'));
+app.use("/music", express.static('uploads/music'));
 app.use("/user", userRoutes);
 app.use("/playlist", playlistRoutes);
 app.use("/song", songRoutes);
 app.use("/like", likeRoutes);
 app.use("/chat", chatRoutes);
 
-app.use("/band", bandRoutes );
+app.use("/band", bandRoutes);
 
+const httpServer = http.createServer(app);
+const io = new Server(httpServer)
 
-app.listen(port, () => {
+io.on("connection", (socket)=> {
+  console.log(`socket ${socket.id} connected`);
+  socket.on("onMessage", (msg) => {
+    console.log(msg)
+  })
+});
+
+httpServer.listen(port, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
+
 
 
 

@@ -13,9 +13,9 @@ router
   .route('/create')
   .post(create);
 
-router
-  .route('/addMessage')
-  .post(addMessage);
+// router
+//   .route('/addMessage')
+//   .post(addMessage);
 
 router
   .route('/removeMessage/:textMessageId')
