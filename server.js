@@ -5,6 +5,8 @@ import playlistRoutes from './routes/playlistRoutes.js'
 import songRoutes from './routes/songRoutes.js'
 import likeRoutes from './routes/likeRoutes.js'
 import chatRoutes from './routes/chatRoutes.js'
+import eventRoutes from './routes/eventRoutes.js'
+import invitationRoutes from './routes/invitationRoutes.js'
 import { Server } from 'socket.io'
 import dotenv from "dotenv";
 import cors from "cors";
@@ -55,8 +57,10 @@ app.use("/playlist", playlistRoutes);
 app.use("/song", songRoutes);
 app.use("/like", likeRoutes);
 app.use("/chat", chatRoutes);
+app.use("/band", bandRoutes );
+app.use("/event", eventRoutes );
+app.use("/invitation", invitationRoutes );
 
-app.use("/band", bandRoutes);
 
 const httpServer = http.createServer(app);
 const io = new Server(httpServer)

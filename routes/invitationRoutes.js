@@ -1,17 +1,26 @@
 import express from 'express';
-import { getAllInvitations, removeIvitation }
+import {declineInvitation,acceptedInvitation,SendInvitation,getInvitationByRecepId }
 from '../controllers/invitationController.js';
 const router = express.Router();
-
-router
-.route('/getAllInv')
-.get(getAllInvitations)
-
-
-
-router
-  .route('/deleteInv/:id')
-  .delete(removeIvitation)
-
   
+router
+.route('/sendInvitation')
+  .post(SendInvitation)
+
+router
+
+
+  .route('/acceptedInvitation')
+  .put(acceptedInvitation)
+
+
+
+router
+  .route('/declineInvitation')
+  .put(declineInvitation)
+
+  router
+  .route('/getByUser/:userId')
+  .get(getInvitationByRecepId);
+
 export default router;

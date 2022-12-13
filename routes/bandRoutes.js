@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAll, getByUser, remove, modify, addUser, add } from '../controllers/bandController.js';
+import { getAll, getByUser, remove, modify, addUser, add, removeUser } from '../controllers/bandController.js';
 import uploadBandImage from '../middlewares/Upload.js';
 
 const router = express.Router();
@@ -23,6 +23,10 @@ router
 router
   .route('/addArtiste')
   .put(addUser)
+
+  router
+  .route('/removeArtist')
+  .put(removeUser)
 
 router
   .route('/delete/:id')

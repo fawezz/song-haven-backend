@@ -84,9 +84,9 @@ export async function addUser(req, res) {
     const bandId = req.body.bandId
     const userId = req.body.userId;
 
-    const band = await Band.findByIdAndUpdate(bandId, { $addToSet: { Users: userId } }, { new: true });
+    const band = await Band.findByIdAndUpdate(bandId, { $addToSet: { users: userId } }, { new: true });
     if (!band) {
-      res.status(404).json({ message: "user not found" });
+      res.status(404).json({ message: "band not found" });
     }
     band.save((err) => {
       if (err) {
@@ -94,12 +94,13 @@ export async function addUser(req, res) {
       }
     });
 
-    return res.status(200).json({ message: "user Added Successfully", band });
+    return res.status(200).json({ message: "band Added Successfully", band });
   }
   catch (err) {
     console.log(err);
   }
 }
+
 
 export async function remove(req, res) {
   try {
@@ -113,6 +114,27 @@ export async function remove(req, res) {
   }
   catch (err) {
     res.status(500).json({ "message": err })
+    console.log(err);
+  }
+}
+
+export async function removeUser(req, res) {
+
+  const { bandId, userId } = req.body;
+  try {
+    let user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ "message": "user not found" })
+    }
+    var newBand = await Band.findByIdAndUpdate(bandId, { $pull: { users: userId } }, { new: true }).populate({
+      path: 'users',
+      model: 'User'
+    });
+
+    res.status(200).json({ message: "user removed", newBand })
+  }
+  catch (err) {
+    res.status(500).json({ "message": err.message })
     console.log(err);
   }
 }
