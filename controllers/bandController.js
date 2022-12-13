@@ -1,5 +1,5 @@
 import Band from '../models/band.js';
-import user from '../models/user.js';
+import User from '../models/user.js';
 
 export const add = (req, res) => {
   let bnd = new Band({
@@ -77,9 +77,9 @@ export async function addUser(req, res) {
     const bandId = req.body.bandId
     const userId = req.body.userId;
 
-    const band = await Band.findByIdAndUpdate(bandId, { $addToSet: { Users: userId } }, { new: true });
+    const band = await Band.findByIdAndUpdate(bandId, { $addToSet: { users: userId } }, { new: true });
     if (!band) {
-      res.status(404).json({ message: "user not found" });
+      res.status(404).json({ message: "band not found" });
     }
     band.save((err) => {
       if (err) {
@@ -87,12 +87,13 @@ export async function addUser(req, res) {
       }
     });
 
-    return res.status(200).json({ message: "user Added Successfully", band });
+    return res.status(200).json({ message: "band Added Successfully", band });
   }
   catch (err) {
     console.log(err);
   }
 }
+
 
 export async function remove(req, res) {
   try {
@@ -109,21 +110,24 @@ export async function remove(req, res) {
     console.log(err);
   }
 }
-export async function saveImage(req, res) {
-  console.log("changing image")
-  const name = req.body.name.toLowerCase();
-  try {
-    let currentUser = await user.findOne({ 'name': name });
-    try {
-      currentUser.imageId = req.file.filename;
-      currentUser.save()
-      res.status(201).json({ message: "Image Uploaded", imageId: req.file.filename });
-    } catch (error) {
-      console.log(error.message)
-      res.status(400).json({ message: error.message });
-    }
 
-  } catch (error) {
-    res.status(500).json({ message: error });
+export async function removeUser(req, res) {
+
+  const { bandId, userId } = req.body;
+  try {
+    let user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ "message": "user not found" })
+    }
+    var newBand = await Band.findByIdAndUpdate(bandId, { $pull: { users: userId } }, { new: true }).populate({
+      path: 'users',
+      model: 'User'
+    });
+
+    res.status(200).json({ message: "user removed", newBand })
+  }
+  catch (err) {
+    res.status(500).json({ "message": err.message })
+    console.log(err);
   }
 }

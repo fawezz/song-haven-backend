@@ -3,18 +3,22 @@ const { Schema, model } = mongoose;
 const invitationSchema = new Schema(
     {
         status: {
-            enum: ['Pending','Accepted','Decline'],
+            enum: [0 //accept
+                ,1//decline
+                ,2 //pending
+            ],
             type: String,
-            required: true
+            required: true,
+            default: 2
         },
-        Sender: {
-            type: Int,
-            required: true
-        },
-        recever: {
-            type: String,
-            required: true
-        }
+        
+            requester: { 
+                type: Schema.Types.ObjectId,
+                 ref: 'Band'},
+        
+            recipient: {
+                 type: Schema.Types.ObjectId, 
+                 ref: 'User'},
     },
     {
         timestamps: true
