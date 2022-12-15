@@ -1,5 +1,6 @@
 import Band from '../models/band.js';
 import User from '../models/user.js';
+import Conversation from '../models/conversation.js';
 
 export const add = (req, res) => {
   let band = new Band({
@@ -9,11 +10,22 @@ export const add = (req, res) => {
   })
 
   if (req.file) {
-    band.image = req.file.path
+    band.image = req.file.filename  
+  }else{
+    band.image = "bandDefaultImage.png"
   }
+
   band.save()
-    .then(response => {
+    .then(async response => {
       band.populate('creator');
+
+      const conversation = await Conversation.create({
+        band: band,
+      }).catch((err) => {
+        console.log(err.message)
+        console.log("Error on creating conversation during add band")
+        //return res.status(400).json({ message: err.message });
+      });
       res.json({ message: 'Band Added successfuly!!', band })
     })
     .catch(error => {
@@ -32,7 +44,7 @@ export async function getByUser(req, res) {
       return res.status(404).json({ message: "user not found" })
     }
 
-    let bands = await Band.find({ 'id': user.id })
+    let bands = await Band.find({ users : { '_id': user.id } })//{ 'id': user.id }
       .populate('users', 'firstname lastname imageId');
     if (bands.length == 0) {
       return res.status(404).json({ bands: [] });
