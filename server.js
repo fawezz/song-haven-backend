@@ -57,19 +57,46 @@ app.use("/playlist", playlistRoutes);
 app.use("/song", songRoutes);
 app.use("/like", likeRoutes);
 app.use("/chat", chatRoutes);
-app.use("/band", bandRoutes );
-app.use("/event", eventRoutes );
-app.use("/invitation", invitationRoutes );
+app.use("/band", bandRoutes);
+app.use("/event", eventRoutes);
+app.use("/invitation", invitationRoutes);
 
 
 const httpServer = http.createServer(app);
 const io = new Server(httpServer)
 
-io.on("connection", (socket)=> {
+io.on("connection", (socket) => {
   console.log(`socket ${socket.id} connected`);
-  socket.on("onMessage", (msg) => {
-    console.log(msg)
-  })
+  socket.emit('bot_message', {
+    message: `Welcome ${socket.id} u are connected`,
+    username: "CHAT_BOT",
+  });
+  //listen to messsages received from this user
+  socket.on('send_message', async (data) => {
+    const { text, senderId, conversationId, roomId } = data; //room is the bandId of the conversation
+    console.log("entered send message " + roomId + " "+  conversationId +" " + senderId +" " + text)
+    let newMessage = await addMessage(senderId, text, conversationId);
+    io.in(roomId).emit('receive_message', newMessage); // Send to all users in room, including sender
+  });
+  // Add a user to a room
+  socket.on('join_room', (data) => {
+    const { userId, roomId } = data; // Data sent from client when join_room event emitted : room id is bandId
+    socket.join(roomId); // Join the user to a socket room
+
+    // Send welcome msg to user that just joined chat only
+    socket.emit('bot_message', {
+      message: `Welcome ${userId} to ${roomId}`,
+      username: "CHAT_BOT",
+    });
+
+    // Send message to all users currently in the room, apart from the user that just joined
+    socket.to(roomId).emit('bot_message', {
+      message: `${userId} has joined the chat room ${roomId}`,
+      username: "CHAT_BOT"
+    });
+    
+  });
+
 });
 
 httpServer.listen(port, () => {

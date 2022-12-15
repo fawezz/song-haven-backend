@@ -1,6 +1,7 @@
 import Conversation from "../models/conversation.js";
 import Band from "../models/band.js";
 import TextMessage from "../models/textMessage.js";
+import User from "../models/user.js";
 
 
 
@@ -17,7 +18,7 @@ export async function create(req, res) {
         }).catch((err) => {
             console.log(err.message)
             return res.status(400).json({ message: err.message });
-        });
+        })
 
         await conversation.populate({
             path: 'band',
@@ -63,6 +64,7 @@ export async function getByBand(req, res) {
         if (!conversation) {
             return res.status(404).json({ message: "No conversation found for band" });
         }
+        console.log(conversation.textMessages.length)
         return res.status(200).json({ conversation });
     } catch (err) {
         console.log(err.message);
@@ -72,15 +74,18 @@ export async function getByBand(req, res) {
 
 export async function addMessage(senderId, text, conversationId) {
     try {
-
+        let user = await User.findById(senderId);
+        if (!user) {
+            console.log("message sender not found")
+            exit(1)
+        }
         const textMessage = await TextMessage.create({
             conversation: conversationId,
-            sender: senderId,
+            sender: user,
             text: text
         }).catch((err) => {
             console.log(err.message)
         });
-
         textMessage.populate('sender', 'firstname lastname imageId');
 
         const conversation = await Conversation.findByIdAndUpdate(
@@ -91,7 +96,6 @@ export async function addMessage(senderId, text, conversationId) {
         if (!conversation) {
             console.log("conversation not found")
         }
-
         return textMessage;
     }
     catch (err) {
@@ -102,7 +106,6 @@ export async function addMessage(senderId, text, conversationId) {
 export async function removeMessage(req, res) {
     const { textMessageId } = req.params;
     //console.log(textMessageId);
-
     try {
         let textMessage = await TextMessage.findById(textMessageId);
         if (!textMessage) {

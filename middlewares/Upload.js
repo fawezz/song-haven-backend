@@ -7,12 +7,11 @@ var storage = multer.diskStorage({
     },
     filename: function(req, file, cb) {
         let ext = path.extname(file.originalname)
-        cb(null, Date.now() + ext)
+        cb(null, "bandImage" + Date.now() + ext)
     }
 })
 
 var uploadBandImage = multer ({
-    //dest:'upload',
     storage: storage,
     fileFilter: function(req, file, callback){
         if(
