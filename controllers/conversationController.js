@@ -117,7 +117,7 @@ export async function removeMessage(req, res) {
         });
         await TextMessage.findByIdAndDelete(textMessage.id);
 
-        res.status(200).json({ message: "message removed" })
+        res.status(200).json({ message: "message removed", textMessageId: textMessage.id })
     }
     catch (err) {
         res.status(500).json({ "message": err.message })

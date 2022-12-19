@@ -1,6 +1,7 @@
 import express from 'express';
 
-import { signin, signup, verifyAccount, remove, sendCode ,verifyOTP, createNewPassword, modifyDetails, ResendWelcomeMail, saveImage, searchByName, getById } from '../controllers/userController.js';
+import { signin, signup, verifyAccount, remove, sendCode ,verifyOTP, createNewPassword, modifyDetails
+  , ResendWelcomeMail, saveImage, searchByName, getById, loginByEmail } from '../controllers/userController.js';
 import verifyToken from '../middlewares/authMiddleware.js';
 import uploadUserImage from '../middlewares/uploadImageMiddleware.js';
 import sharp from 'sharp';
@@ -60,5 +61,9 @@ router
   router
   .route('/getById')
   .post(getById);
+
+  router
+  .route('/loginByEmail')
+  .post(loginByEmail);  
 
 export default router;
