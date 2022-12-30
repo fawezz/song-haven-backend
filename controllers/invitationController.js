@@ -88,3 +88,22 @@ export async function declineInvitation(req, res) {
   }
 }
 
+
+export async function remove(req, res) {
+  try {
+    const invitation = await Invitation
+      .findByIdAndDelete(req.params.id);
+      invitation.status = "1"
+      invitation.save()
+
+    if (!invitation) {
+      res.status(404).json({ "message": "Invitation not found" })
+    }
+    res.status(200).json({ "message": "Deleted band" })
+  }
+  catch (err) {
+    res.status(500).json({ "message": err })
+    console.log(err);
+  }
+}
+

@@ -1,44 +1,35 @@
 import mongoose from 'mongoose';
+import location from '../models/location.js';
+
 const { Schema , model } = mongoose;
 
-const LocationSchema = mongoose.Schema({
 
-    type: {
-      type: String, 
-      enum: ['Point'],
-      required: true
-    },
-    coordinates: {
-      type: [Number,Number],
-      required: true
-    }
- 
-});
 
 const eventSchema = mongoose.Schema({
-      eventname: {
+      title: {
         type: String,
         require: false,
       },
-      date: {
+      dateEvent: {
         type: Date,
         required:false
       },
-      creator : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'user'
-      }, 
-      band : {
+      description: {
+        type: String,
+        require: false,
+      },
+    
+      owner : {
         type : mongoose.Schema.Types.ObjectId,
         ref : 'band'
       },  
+
       location: {
-        type:String,
-        required: false
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'location'
+       
       },
-      adresse:{
-        type: String
-      },
+     
     },
   );
 

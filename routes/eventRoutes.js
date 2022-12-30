@@ -1,10 +1,32 @@
 import express from 'express';
-import { add} from '../controllers/eventCntroller.js';
+import { addEvent,modify,remove,getAll} from '../controllers/eventCntroller.js';
 
 const router = express.Router();
 
 router
   .route('/addEvent')
-  .post(add);
+  .post(addEvent);
+
+  router
+  .route('/modify')
+  .put(modify);
+
+  
+  router
+  .route('/deleteEvent/:id')
+  .delete(remove);
+
+  router
+  .route('/getAll')
+  .get(getAll);
+
+
 
   export default router;
+
+  
+
+
+
+
+

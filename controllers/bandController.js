@@ -7,6 +7,10 @@ export const add = (req, res) => {
     name: req.body.name,
     discription: req.body.discription,
     creator: req.body.creatorId,
+    users: [req.body.creatorId]
+
+
+    
   })
 
   if (req.file) {
@@ -129,6 +133,8 @@ export async function remove(req, res) {
     console.log(err);
   }
 }
+
+
 
 export async function removeUser(req, res) {
 
