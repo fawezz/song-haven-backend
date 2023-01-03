@@ -1,7 +1,7 @@
-FROM node:10.13-alpine
+FROM node:alpine
 WORKDIR /usr/app
 COPY package*.json /usr/app
-RUN npm i
+RUN npm ci
 COPY . .
 EXPOSE 9090
 CMD ["npm", "start"]

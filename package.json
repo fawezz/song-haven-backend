@@ -30,6 +30,8 @@
     "nodemailer": "^6.8.0",
     "otp-generator": "^4.0.0",
     "sharp": "^0.31.2",
-    "socket.io": "^4.5.4"
+    "socket.io": "^4.5.4",
+    "swagger-jsdoc": "^6.2.7",
+    "swagger-ui-express": "^4.6.0"
   }
 }

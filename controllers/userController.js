@@ -310,3 +310,11 @@ export async function loginByEmail(req, res) {
     console.log(err);
   }
 }
+
+export async function getTerms(req, res) {
+  try {
+    return res.status(200).json("terms");
+  } catch (err) {
+    console.log(err);
+  }
+}

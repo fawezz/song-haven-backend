@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+ # mongodb services
+  mongo_db:
+   container_name: db_container
+   image: mongo:6
+   restart: always
+   ports: 
+     - 27017:27017
+   networks:
+     - app_7
+   volumes:
+     - mongo_db:/data/db
+
+ # node api services
+  api:
+    build: .
+    ports:
+     - 9090:9090
+    networks:
+     - app_7
+    environment:
+      HOSTNAME: "localhost"
+      PORT: 9090
+      MONGODB_URI: mongodb://mongo
+      SECRET_KEY: "0c4c90014c7dfcfc72024ce5c1dc526d288413321c240a82998faf46d31b1de58ccde0"
+      NODEMAILER_EMAIL: "SongHavenApp@gmail.com"
+      NODEMAILER_PASS: "ifvgqkcwjnsogdtu"
+    depends_on:
+      - mongo_db  
+
+volumes:
+  mongo_db: {}
+networks: 
+  app_7 :
