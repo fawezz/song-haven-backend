@@ -8,9 +8,6 @@ export const add = (req, res) => {
     discription: req.body.discription,
     creator: req.body.creatorId,
     users: [req.body.creatorId]
-
-
-    
   })
 
   if (req.file) {
@@ -21,7 +18,7 @@ export const add = (req, res) => {
 
   band.save()
     .then(async response => {
-      band.populate('creator');
+      band.populate('creator', 'firstname lastname imageId');
 
       const conversation = await Conversation.create({
         band: band,
@@ -156,3 +153,5 @@ export async function removeUser(req, res) {
     console.log(err);
   }
 }
+
+

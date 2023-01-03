@@ -1,5 +1,5 @@
 import express from 'express';
-import { addEvent,modify,remove,getAll} from '../controllers/eventCntroller.js';
+import { addEvent,modify,remove,getAll, getByUser} from '../controllers/eventCntroller.js';
 
 const router = express.Router();
 
@@ -17,8 +17,8 @@ router
   .delete(remove);
 
   router
-  .route('/getAll')
-  .get(getAll);
+  .route('/getByCreator/:userId')
+  .get(getByUser);
 
 
 

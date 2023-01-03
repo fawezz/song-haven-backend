@@ -1,9 +1,19 @@
 import mongoose from 'mongoose';
-import location from '../models/location.js';
-
 const { Schema , model } = mongoose;
 
+const LocationSchema = mongoose.Schema({
 
+    type: {
+      type: String, 
+      enum: ['Point'],
+      
+    },
+    coordinates: {
+      type: [Number,Number],
+    
+    }
+ 
+});
 
 const eventSchema = mongoose.Schema({
       title: {
@@ -25,8 +35,7 @@ const eventSchema = mongoose.Schema({
       },  
 
       location: {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'location'
+        type:LocationSchema
        
       },
      
