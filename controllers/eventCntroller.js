@@ -76,3 +76,25 @@ import Event from '../models/event.js';
         return res.status(500).json({ message: err.message });
       }
     }
+
+    export async function getByUser(req, res) {
+      const userId = req.params.userId;
+      // console.log(userId)
+      try {
+        var user = await User.findById(userId);
+        if (!user) {
+          return res.status(404).json({ message: "user not found" })
+        }
+    
+        let events = await Event.find({ users : { '_id': user.id } })//{ 'id': user.id }
+          .populate('users', 'firstname lastname imageId');
+        if (events.length == 0) {
+          return res.status(404).json({ events: [] });
+        }
+        return res.status(200).json({ events });
+      } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: err.message });
+      }
+    }
+    
