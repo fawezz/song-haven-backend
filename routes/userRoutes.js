@@ -1,8 +1,10 @@
 import express from 'express';
 
 import { signin, signup, verifyAccount, remove, sendCode ,verifyOTP, createNewPassword, modifyDetails
-  , ResendWelcomeMail, saveImage, searchByName, getById, loginByEmail } from '../controllers/userController.js';
+  , ResendWelcomeMail, saveImage, searchByName, getById, loginByEmail,profile} from '../controllers/userController.js';
 import verifyToken from '../middlewares/authMiddleware.js';
+import{protect} from '../middlewares/authMiddleware.js';
+
 import uploadUserImage from '../middlewares/uploadImageMiddleware.js';
 import sharp from 'sharp';
 
@@ -42,7 +44,7 @@ router
 
   router
   .route('/forgotPassword/createNewPassword')
-  .put(createNewPassword);
+  .put(protect,createNewPassword);
 
 //Resend Welcome Mail
   router
@@ -65,5 +67,9 @@ router
   router
   .route('/loginByEmail')
   .post(loginByEmail);  
+
+  router
+  .route("/profile")
+  .get(protect,profile);
 
 export default router;
