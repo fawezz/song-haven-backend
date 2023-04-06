@@ -5,22 +5,24 @@ import Band from '../models/band.js';
 import User from '../models/user.js';
 import Event from '../models/event.js';
 
-    export async function addEvent(req,res){
-        var event = await Event.create({
-           title : req.body.title,
-          description : req.body.description,
-          dateEvent : req.body.dateEvent,
-           owner : req.body.owner,
-          //  location:{
-          //  type : req.body.location.type,
-          //   coordinates : req.body.location.coordinates
-          //  },
-        })
-        event.save;
+export async function addEvent(req, res) {
+  try {
+    const event = await Event.create({
+      title: req.body.title,
+      description: req.body.description,
+      dateEvent: req.body.dateEvent,
+      owner: req.body.owner,
+      location: {
+        type: "Point",
+        coordinates: [req.body.longitude, req.body.latitude],
+      },
+    });
+    res.status(201).json(event);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+}
 
-        
-      
-    }
     export async function modify(req, res) {
       const { eventId, title, description, date ,location } = req.body;
       try {

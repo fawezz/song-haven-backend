@@ -1,6 +1,7 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+
 import { sendWelcomeEmail, sendOtpEmail } from "../middlewares/nodemailMiddleware.js";
 import generateOTP from "../middlewares/otpMiddleware.js";
 
@@ -28,7 +29,6 @@ export async function signup(req, res) {
     }).catch((err) => {
       return res.status(400).json({ message: err.message });
     });
-
     const newToken = jwt.sign(
       { user_id: currentUser._id, email: currentUser.email },
       process.env.SECRET_KEY,
@@ -38,8 +38,11 @@ export async function signup(req, res) {
     );
     if(password != ""){
       sendWelcomeEmail(currentUser.email, currentUser._id);
+
     }
+    //console.log("Successfully signed in as", currentUser.email);
     return res.status(200).json({ message: "account created", token: newToken, currentUser });
+    
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: err });
@@ -74,37 +77,33 @@ export async function verifyAccount(req, res) {
 }
 
 
+
 export async function signin(req, res) {
-  try {
+  try{
     const email = req.body.email.toLowerCase()
-    const password = req.body.password;
+    const  password = req.body.password;
 
     const currentUser = await User.findOne({ 'email': email });
-
     if (currentUser && (await bcrypt.compare(password, currentUser.password))) {
+      
+      const payload = {id:currentUser.id};
+      const token = jwt.sign(payload,process.env.SECRET_KEY, {
+          expiresIn: 60 * 60 * 24,
+      });
 
-      const newToken = jwt.sign(
-        { user_id: currentUser._id, email: currentUser.email },
-        process.env.SECRET_KEY,
-        {
-          expiresIn: "4h",
-        }
-      );
-
-      return res.status(200).json({ message: "login avec succeés", token: newToken, currentUser });
+      return res.status(200).json({message : "login avec succeés", token: token});
     }
-    else {
-      if (!currentUser) {
-        res.status(400).json({ message: "No such user exists, please signUp" });
-      } else {
-        res.status(401).json({ message: "wrong password" });
+    else{
+      if(!currentUser){
+        res.status(400).json({message : "No such user exists, please signUp"});
+      }else{
+        res.status(401).json({message : "wrong password"});
       }
     }
-  } catch (err) {
+  } catch (err){
     console.log(err);
   }
 }
-
 export async function modifyDetails(req, res) {
   const { id, firstname, lastname, password } = req.body;
   try {
@@ -157,35 +156,37 @@ export async function sendCode(req, res) {
   try {
     let currentUser = await User.findOne({ 'email': email });
     if (currentUser) {
+      currentUser.otpCode=generateOTP()
       sendOtpEmail(currentUser.email, currentUser.otpCode);
+      currentUser.save()
+      
       res.status(200).json({ message: "Please check your email" });
+     
     } else {
       res.status(404).json({ message: "Invalid email adress" });
     }
 
   } catch (err) {
+    console.log(err)
     res.status(500).json({ error: err });
   }
 }
 
 export async function verifyOTP(req, res) {
-  const email = req.body.email.toLowerCase();
+  const email = req.body && req.body.email ? req.body.email.toLowerCase() : null;
   const otp = req.body.otpCode;
+ 
   try {
     let usr = await User.findOne({ 'email': email },);
+    console.log(`${otp} ==== ${usr.otpCode}`)
     if (usr && usr.otpCode == otp) {
-      const otpNew = generateOTP();
-      usr.otpCode = otpNew;
-      usr.save((err) => {
-        if (err) {
-          res
-            .status(400)
-            .json({ message: "An error occurred", error: err.message });
-          process.exit(1);
-        }
-      });
-      res.status(200).json({ otpVerified: true });
-
+        const payload = {id:usr.id};
+        const token = jwt.sign(payload,process.env.SECRET_KEY, {
+            expiresIn: 60 * 60 * 24,
+        });
+  
+      res.status(200).json({ otpVerified: true ,token:token});
+      
     } else {
       res.status(401).json({ otpVerified: false });
     }
@@ -195,12 +196,11 @@ export async function verifyOTP(req, res) {
 }
 
 export async function createNewPassword(req, res) {
-  const email = req.body.email.toLowerCase();
-  const password = req.body.password;
-  try {
-    let usr = await User.findOne({ 'email': email });
 
-    usr.password = await bcrypt.hash(password, 10);
+  try {
+    console.log(req.user);
+    let usr = await User.findById(req.user._id);
+    usr.password = await bcrypt.hash(req.body.password, 10);
     usr.save((err) => {
       if (err) {
         res
@@ -267,6 +267,31 @@ export async function searchByName(req, res) {
     return res.status(500).json(err.message);
   }
 }
+
+export async function getuser(req, res) {
+  User.findById(req.params.id)
+    .then((doc) => {
+      res.status(200).json(doc);
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err });
+    });
+}
+
+
+
+export async function profile (req,res) {
+  console.log("sssssllmmmm")
+  if(!req.user){
+      return res.status('401').json({error: "You're not authenticated!"});
+  }
+  const user = await User.findById(req.user._id);
+  console.log(user)
+
+  res.status(200).json(user);
+}
+
+
 
 export async function getById(req, res) {
   try {
