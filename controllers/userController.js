@@ -40,7 +40,6 @@ export async function signup(req, res) {
       sendWelcomeEmail(currentUser.email, currentUser._id);
 
     }
-    //console.log("Successfully signed in as", currentUser.email);
     return res.status(200).json({ message: "account created", token: newToken, currentUser });
     
   } catch (err) {
@@ -54,7 +53,6 @@ export async function verifyAccount(req, res) {
   const id = req.params.id;
   try {
     let currentUser = await User.findById(id);
-    console.log(currentUser)
     if (!currentUser.isVerified) {
       currentUser.isVerified = true;
       currentUser.save((err) => {
@@ -133,7 +131,6 @@ export async function modifyDetails(req, res) {
 }
 
 export async function remove(req, res) {
-  //console.log(req.params);
   try {
     const usr = await User
       .findByIdAndDelete(req.params.id);
@@ -198,7 +195,6 @@ export async function verifyOTP(req, res) {
 export async function createNewPassword(req, res) {
 
   try {
-    console.log(req.user);
     let usr = await User.findById(req.user._id);
     usr.password = await bcrypt.hash(req.body.password, 10);
     usr.save((err) => {
@@ -281,12 +277,10 @@ export async function getuser(req, res) {
 
 
 export async function profile (req,res) {
-  console.log("sssssllmmmm")
   if(!req.user){
       return res.status('401').json({error: "You're not authenticated!"});
   }
   const user = await User.findById(req.user._id);
-  console.log(user)
 
   res.status(200).json(user);
 }
