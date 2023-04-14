@@ -30,10 +30,10 @@ export async function getByUser(req, res) {
     if (songs.length == 0) {
       return res.status(404).json({ message: "No songs found for this user" });
     }
-    return res.status(200).json({ songs });
+    return res.status(200).json( songs );
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ message: err.message });
+    return res.status(500).json(err.message );
   }
 }
 
@@ -44,7 +44,7 @@ export async function getAll(req, res) { // ordered by descending creation date
     if (songs.length == 0) {
       return res.status(404).json({ message: "No songs found" });
     }
-    return res.status(200).json({ songs });
+    return res.status(200).json( songs );
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: err.message });

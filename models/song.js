@@ -13,6 +13,7 @@ const songSchema = new Schema(
         },
         genre: {
             type: String,
+            enum: ['pop', 'rock', 'hiphop', 'country', 'electronic', 'jazz', 'blues', 'classical', 'reggae', 'r&b', 'folk', 'heavy metal', 'punk', 'indie', 'world music', 'gospel', 'alternative', 'ambient', 'bluegrass', 'classical crossover', 'dance', 'edm', 'funk', 'grunge', 'house', 'latin', 'new age', 'opera', 'progressive rock', 'soul', 'techno', 'trance'],
             required: true
         },
         filename: {

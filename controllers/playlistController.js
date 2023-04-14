@@ -20,7 +20,7 @@ export async function getByUser(req, res) {
     if (playlists.length == 0) {
       return res.status(404).json({ message: "No playlists found" });
     }
-    return res.status(200).json({ playlists });
+    return res.status(200).json( playlists );
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: err });
