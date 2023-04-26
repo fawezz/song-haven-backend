@@ -279,15 +279,12 @@ export async function getuser(req, res) {
 }
 
 
-
 export async function profile (req,res) {
-  console.log("sssssllmmmm")
   if(!req.user){
       return res.status('401').json({error: "You're not authenticated!"});
   }
   const user = await User.findById(req.user._id);
   console.log(user)
-
   res.status(200).json(user);
 }
 

@@ -35,27 +35,49 @@ export const add = (req, res) => {
       })
     })
 }
-//getByMember
-export async function getByUser(req, res) {
-  const userId = req.params.userId;
-  // console.log(userId)
-  try {
-    var user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "user not found" })
-    }
+/*
+/getByMember
 
-    let bands = await Band.find({ users : { '_id': user.id } })//{ 'id': user.id }
-      .populate('users', 'firstname lastname imageId');
-    if (bands.length == 0) {
+export async function getByUser(req, res) {
+  const userId = req.user;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const bands = await Band.findById({ users: req.user._id })
+    //onst bands = await Band.find({ users: userId })
+
+      .populate("users", "firstname lastname imageId");
+    if (bands.length === 0) {
       return res.status(404).json({ bands: [] });
     }
     return res.status(200).json({ bands });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: err.message });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 }
+*/
+
+///////////////////////////////
+
+export const getByUser = (req, res, next) => {
+
+  Band.find({creatorId: req.user._id})
+      .then(bands => {
+          res.json(bands)
+          console.log(bands)
+      })
+      .catch(error => {
+          res.json({
+              message: "error"
+          })
+      })
+}
+///////////////////////////////
+ 
+
 
 export async function getAll(req, res) {
   try {

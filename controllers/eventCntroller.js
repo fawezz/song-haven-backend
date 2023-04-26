@@ -78,7 +78,7 @@ export async function addEvent(req, res) {
         return res.status(500).json({ message: err.message });
       }
     }
-
+/*
     export async function getByUser(req, res) {
       const userId = req.params.userId;
       // console.log(userId)
@@ -99,4 +99,23 @@ export async function addEvent(req, res) {
         return res.status(500).json({ message: err.message });
       }
     }
+    */
+
+
+    ///////////////////////////////
+
+export const getByUser = (req, res, next) => {
+
+  Event.find({owner: req.user._id})
+      .then(events => {
+          res.json(events)
+          console.log(events)
+      })
+      .catch(error => {
+          res.json({
+              message: "error"
+          })
+      })
+}
+///////////////////////////////
     
