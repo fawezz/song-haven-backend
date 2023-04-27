@@ -43,6 +43,11 @@ const userSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'Song'
           }],
+            //Creator
+          bands: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Band'
+          }],
     },
     {
         timestamps: true

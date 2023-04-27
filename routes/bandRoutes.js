@@ -1,6 +1,8 @@
 import express from 'express';
 import { getAll, getByUser, remove, modify, addUser, add, removeUser } from '../controllers/bandController.js';
 import uploadBandImage from '../middlewares/Upload.js';
+import{protect} from '../middlewares/authMiddleware.js';
+
 
 const router = express.Router();
 
@@ -9,8 +11,8 @@ router
   .get(getAll);
 
 router
-  .route('/getByUser/:userId')
-  .get(getByUser);
+  .route('/getByUser')
+  .get(protect,getByUser);
 
 router
   .route('/modify')
