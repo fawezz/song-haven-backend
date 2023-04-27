@@ -281,7 +281,7 @@ export async function profile (req,res) {
       return res.status('401').json({error: "You're not authenticated!"});
   }
   const user = await User.findById(req.user._id);
-
+//ERROR HANDLE IF USER NOT FOUND
   res.status(200).json(user);
 }
 

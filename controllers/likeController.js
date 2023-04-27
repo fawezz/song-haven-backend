@@ -68,11 +68,11 @@ export async function artistTotalLikes(req, res) {
             )
             console.log("returned");
         }
-        return res.status(200).json({"totalLikes" : totalLikes});
+        return res.status(200).json(totalLikes);
     }
     catch (err){
         console.log(err.message);
-        return res.status(500).json({ "error": err.message });
+        return res.status(500).json(err.message );
     }
 }
 
