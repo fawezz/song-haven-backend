@@ -1,33 +1,26 @@
-import path from 'path';
-import multer from 'multer';
+import multer, { diskStorage } from "multer";
+import {join,dirname} from "path";
+import {fileURLToPath} from "url";
 
-var storage = multer.diskStorage({
-    destination: function(req, file, cb){
-        cb(null, 'uploads/images/band')
-    },
-    filename: function(req, file, cb) {
-        let ext = path.extname(file.originalname)
-        cb(null, "bandImage" + Date.now() + ext)
-    }
-})
+const MIME_TYPES = {
+    "image/jpg": "jpg",
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "video/mp4": "mp4"
+};
 
-var uploadBandImage = multer ({
-    storage: storage,
-    fileFilter: function(req, file, callback){
-        if(
-            file.mimetype == "image/png" || 
-            file.mimetype == "image/jpg"
-        ){
-            callback(null, true)
-        } else{
-            console.log('only png and jpg are supported')
-            callback(null, false)
-        }
-    },
-    limits: {
-        fileSize: 1024 * 1024 * 2
-    }
-})
+export default multer({
+    storage: diskStorage({
+        destination: (req,file,callback) => {
+            const __dirname = dirname(fileURLToPath(import.meta.url));
+            callback(null,join(__dirname,"../uploads/images/band"));
+        },
+        filename:(req,file,callback) =>{
+            const name = file.originalname.split(" ").join("_");
+            const extension = MIME_TYPES[file.mimetype];
+            callback(null,name + Date.now() + "." + extension);
+        },
+    }),
 
-export default uploadBandImage;
- 
+    limits: 10 * 1024 * 1024,
+}).single("image");

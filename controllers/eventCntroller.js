@@ -11,7 +11,7 @@ export async function addEvent(req, res) {
       title: req.body.title,
       description: req.body.description,
       dateEvent: req.body.dateEvent,
-      owner: req.body.owner,
+      owner: req.user._id,
       location: {
         type: "Point",
         coordinates: [req.body.longitude, req.body.latitude],

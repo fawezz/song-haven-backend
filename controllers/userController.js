@@ -288,7 +288,7 @@ export async function profile (req,res) {
   res.status(200).json(user);
 }
 
-
+/*
 
 export async function getById(req, res) {
   try {
@@ -300,11 +300,28 @@ export async function getById(req, res) {
       return res.status(404).json({ message: "user not found" });
     }
   }
+
   catch (err) {
     console.log(err.message);
     return res.status(500).json(err.message);
   }
 }
+
+*/
+export const getByUser = (req, res, next) => {
+
+  User.find({owner: req.user._id})
+      .then(users => {
+          res.json(users)
+          console.log(users)
+      })
+      .catch(error => {
+          res.json({
+              message: "error"
+          })
+      })
+}
+
 
 export async function loginByEmail(req, res) {
   try {

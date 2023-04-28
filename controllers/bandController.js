@@ -3,11 +3,12 @@ import User from '../models/user.js';
 import Conversation from '../models/conversation.js';
 
 export const add = (req, res) => {
+console.log("teeeesstt")
   let band = new Band({
     name: req.body.name,
     discription: req.body.discription,
-    creator: req.body.creatorId,
-    users: [req.body.creatorId]
+    creator: req.user._id,
+    users: [req.user._id]
   })
 
   if (req.file) {
