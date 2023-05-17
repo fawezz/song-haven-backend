@@ -95,12 +95,13 @@ export async function getAll(req, res) {
 }
 
 export async function modify(req, res) {
-  const { bandId, name, discription, image } = req.body;
+  console.log("salem");
+  const { name, discription, image } = req.body;
   try {
-    let band = await Band.findByIdAndUpdate(bandId,
+    let band = await Band.findByIdAndUpdate(req.params.bandId,
       {
         $set: {
-          name,
+          name:name,
           discription,
           image
         }

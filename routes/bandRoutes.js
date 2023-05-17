@@ -16,8 +16,8 @@ router
   .get(protect,getByUser);
 
 router
-  .route('/modify')
-  .put(modify);
+  .route('/modify/:bandId')
+  .put(protect,modify);
 
 router
   .route('/createBand')
