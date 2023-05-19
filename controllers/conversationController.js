@@ -48,7 +48,7 @@ export async function getByBand(req, res) {
                 populate: {
                     path: 'users',
                     model: 'User',
-                    select: { 'firstname': 1, 'lastname': 1, 'imageId': 1 }
+                    select: { 'firstname': 1, 'lastname': 1, 'image': 1 }
                 }
             })
             .populate({
@@ -65,7 +65,7 @@ export async function getByBand(req, res) {
             return res.status(404).json({ message: "No conversation found for band" });
         }
         console.log(conversation.textMessages.length)
-        return res.status(200).json({ conversation });
+        return res.status(200).json(conversation);
     } catch (err) {
         console.log(err.message);
         return res.status(500).json({ message: err.message });
@@ -80,7 +80,7 @@ export async function addMessage(senderId, text, conversationId) {
             exit(1)
         }
         const textMessage = await TextMessage.create({
-            conversation: conversationId,
+            conversationId: conversationId,
             sender: user,
             text: text
         }).catch((err) => {
@@ -107,17 +107,16 @@ export async function removeMessage(req, res) {
     const { textMessageId } = req.params;
     //console.log(textMessageId);
     try {
-        let textMessage = await TextMessage.findById(textMessageId);
+        let textMessage = await TextMessage.findByIdAndDelete(textMessageId);
         if (!textMessage) {
-            return res.status(404).json({ "message": "text message not found" })
+            return res.status(404).json("text message not found")
         }
-        var conversation = await Conversation.findByIdAndUpdate(textMessage.conversation, { $pull: { textMessages: textMessageId } }, { new: true }).populate({
+        var conversation = await Conversation.findByIdAndUpdate(textMessage.conversationId, { $pull: { textMessages: textMessageId } }, { new: true }).populate({
             path: 'textMessages',
             model: 'TextMessage'
         });
-        await TextMessage.findByIdAndDelete(textMessage.id);
-
-        res.status(200).json({ message: "message removed", textMessageId: textMessage.id })
+    
+        res.status(200).json("message removed")
     }
     catch (err) {
         res.status(500).json({ "message": err.message })

@@ -89,7 +89,7 @@ export async function signin(req, res) {
           expiresIn: 60 * 60 * 24,
       });
 
-      return res.status(200).json({message : "login avec succeés", token: token});
+      return res.status(200).json({message : "login avec succeés", token: token, userId: currentUser._id});
     }
     else{
       if(!currentUser){
@@ -230,20 +230,13 @@ export async function ResendWelcomeMail(req, res) {
 
 export async function saveImage(req, res) {
   console.log("changing image")
-  const email = req.body.email.toLowerCase();
   try {
-    let currentUser = await User.findOne({ 'email': email });
-    try {
-      currentUser.imageId = req.file.filename;
-      currentUser.save()
-      res.status(201).json({ message: "Image Uploaded", imageId: req.file.filename });
-    } catch (error) {
-      console.log(error)
-      res.status(400).json({ message: error });
-    }
-
+    var currentUser = req.user
+    currentUser.imageId = req.file.filename;
+    currentUser.save()
+    res.status(201).json(req.file.filename );
   } catch (error) {
-    res.status(500).json({ message: error });
+    res.status(500).json(error);
   }
 }
 

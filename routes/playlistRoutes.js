@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { addSong, create, getByUser, modifyPlaylist, remove, removeSong } from '../controllers/playlistController.js';
-import verifyToken from '../middlewares/authMiddleware.js';
+import { protect } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
@@ -12,15 +12,15 @@ router
 
 router
   .route('/create')
-  .post(create);
+  .post(protect, create);
 
 router
   .route('/addSong')
-  .put(addSong);
+  .put(protect ,addSong);
 
 router
   .route('/removesong')
-  .put(removeSong)
+  .put(protect, removeSong)
 
   router
   .route('/modify')

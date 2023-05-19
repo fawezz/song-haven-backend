@@ -6,10 +6,15 @@ import User from "../models/user.js";
 
 export async function toggleLike(req, res) {
     try{
-        const {userId, songId} = req.body
+        const userId = req.user._id
+        const songId = req.body.songId
+        console.log("aaaaaaaaaaaaaaaa" + req.user._id)
         const liked = await Like.findOne({user: userId, song: songId});
+        console.log("aaaaaaaaaaaaaaaa" + "after find one")
 
         if(liked == null){
+            console.log("aaaaaaaaaaaaaaaa" + "inside if liked null")
+
             const like = await Like.create({
                 user: userId,
                 song: songId
@@ -17,11 +22,11 @@ export async function toggleLike(req, res) {
                 return res.status('400').json({ "message": err });
               });
     
-            return res.status(200).json({liked : true});
+            return res.status(200).json(true);
         }
         else{
             await Like.findByIdAndDelete(liked.id);
-            return res.status(200).json({liked : false});
+            return res.status(200).json(false);
         }
     }
     catch (err){
@@ -33,14 +38,15 @@ export async function toggleLike(req, res) {
 
 export async function isLikedByUser(req, res) {
     try{
-        const {userId, songId} = req.body
+        const userId = req.user._id
+        const songId = req.body.songId
         const liked = await Like.findOne({user: userId, song: songId});
 
         if(liked == null){
-            return res.status(200).json({liked : false});
+            return res.status(200).json(false);
         }
         else{
-            return res.status(200).json({liked : true});
+            return res.status(200).json(true);
         }
     }
     catch (err){
@@ -52,7 +58,7 @@ export async function isLikedByUser(req, res) {
 export async function artistTotalLikes(req, res) {
     try{
         var totalLikes = 0
-        const userId = req.params.artistId
+        const userId = req.user._id
         const artist = await User.findById(userId);
         if(artist == null)
         {

@@ -31,7 +31,7 @@ router
   router
   .route('/profileImage')
   //.put(verifyToken, modifyDetails);
-  .post(uploadUserImage.single("image"), saveImage);
+  .post( protect ,uploadUserImage.single("image"), saveImage);
 
 //forgot password  
   router
