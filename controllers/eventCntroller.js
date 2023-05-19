@@ -11,14 +11,15 @@ export async function addEvent(req, res) {
       title: req.body.title,
       description: req.body.description,
       dateEvent: req.body.dateEvent,
-      owner: req.body.owner,
+      owner: req.user._id,
       location: {
-        type: "Point",
-        coordinates: [req.body.longitude, req.body.latitude],
+      
+        coordinates: [12.3456,78.9101],
       },
     });
     res.status(201).json(event);
   } catch (err) {
+    console.log(err)
     res.status(400).json({ message: err.message });
   }
 }

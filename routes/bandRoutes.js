@@ -2,6 +2,7 @@ import express from 'express';
 import { getAll, getByUser, remove, modify, addUser, add, removeUser } from '../controllers/bandController.js';
 import uploadBandImage from '../middlewares/Upload.js';
 import{protect} from '../middlewares/authMiddleware.js';
+import multer from 'multer';
 
 
 const router = express.Router();
@@ -15,12 +16,12 @@ router
   .get(protect,getByUser);
 
 router
-  .route('/modify')
-  .put(modify);
+  .route('/modify/:bandId')
+  .put(protect,modify);
 
 router
   .route('/createBand')
-  .post(uploadBandImage.single('image'), add);
+  .post(protect,uploadBandImage, add);
 
 router
   .route('/addArtiste')

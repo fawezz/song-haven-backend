@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { signin, signup, verifyAccount, remove, sendCode ,verifyOTP, createNewPassword, modifyDetails
-  , ResendWelcomeMail, saveImage, searchByName, getById, loginByEmail,profile} from '../controllers/userController.js';
+  , ResendWelcomeMail, saveImage, searchByName, getByUser, loginByEmail,profile} from '../controllers/userController.js';
 import verifyToken from '../middlewares/authMiddleware.js';
 import{protect} from '../middlewares/authMiddleware.js';
 
@@ -62,7 +62,7 @@ router
   
   router
   .route('/getById')
-  .post(getById);
+  .post(protect,getByUser);
 
   router
   .route('/loginByEmail')

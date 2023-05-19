@@ -6,7 +6,7 @@ const router = express.Router();
 
 router
   .route('/addEvent')
-  .post(addEvent);
+  .post(protect,addEvent);
 
   router
   .route('/modify')

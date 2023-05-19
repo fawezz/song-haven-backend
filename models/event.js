@@ -3,11 +3,7 @@ const { Schema , model } = mongoose;
 
 const LocationSchema = mongoose.Schema({
 
-    type: {
-      type: String, 
-      enum: ['Point'],
-      
-    },
+ 
     coordinates: {
       type: [Number,Number],
     
@@ -21,7 +17,7 @@ const eventSchema = mongoose.Schema({
         require: false,
       },
       dateEvent: {
-        type: Date,
+        type: String,
         required:false
       },
       description: {
