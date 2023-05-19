@@ -82,6 +82,7 @@ io.on("connection", (socket) => {
   socket.on('join_room', (data) => {
     const { userId, roomId } = data; // Data sent from client when join_room event emitted : room id is bandId
     socket.join(roomId); // Join the user to a socket room
+    console.log(`socket ${userId} joined ${roomId}`);
 
     // Send welcome msg to user that just joined chat only
     socket.emit('bot_message', {

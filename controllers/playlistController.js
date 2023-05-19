@@ -16,32 +16,33 @@ export async function getByUser(req, res) {
           select: { 'firstname': 1, 'lastname': 1 }
         }
       })
-
+/*
     if (playlists.length == 0) {
-      return res.status(404).json({ message: "No playlists found" });
-    }
+      return res.status(200).json("No playlists found");
+    }*/
     return res.status(200).json( playlists );
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ message: err });
+    return res.status(500).json(err);
   }
 }
 
 export async function create(req, res) {
-  const { ownerId, title, songs } = req.body;
+  const {title, songs } = req.body;
+  const ownerId = req.user.id
   try {
     //let owner = await User.findById(userId)
     console.log(songs)
     const newPlaylist = await Playlist.create({
       title: title,
       owner: ownerId,
-      songs: songs
+      songs: [songs]
     }).catch((err) => {
       console.log(err)
-      return res.status(400).json({ message: err });
+      return res.status(400).json(err);
     });
 
-    newPlaylist.populate({
+    await newPlaylist.populate({
       path: 'songs',
       model: 'Song',
       populate: {
@@ -50,10 +51,9 @@ export async function create(req, res) {
         select: { 'firstname': 1, 'lastname': 1 }
       }
     });
-
-    return res.status(200).json({ message: "Playlist created successfully", newPlaylist });
+    return res.status(200).json(newPlaylist);
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json(err.message);
   }
 }
 
@@ -65,15 +65,15 @@ export async function addSong(req, res) {
 
     const playlist = await Playlist.findByIdAndUpdate(playlistId, { $addToSet: { songs: songId } }, { new: true });
     if (!playlist) {
-      res.status(404).json({ message: "playlist not found" });
+      res.status(404).json("playlist not found");
     }
     playlist.save((err) => {
       if (err) {
-        return res.status(400).json({ message: "An error occurred", error: err.message });
+        return res.status(400).json(err.message);
       }
     });
 
-    return res.status(200).json({ message: "Song Added Successfully", playlist });
+    return res.status(200).json(playlist);
   }
   catch (err) {
     console.log(err);
@@ -86,7 +86,7 @@ export async function removeSong(req, res) {
   try {
     let song = await Song.findById(songId);
     if (!song) {
-      return res.status(404).json({ "message": "song not found" })
+      return res.status(404).json("song not found")
     }
     var newPlaylist = await Playlist.findByIdAndUpdate(playlistId, { $pull: { songs: songId } }, { new: true }).populate({
       path: 'songs',
@@ -98,10 +98,10 @@ export async function removeSong(req, res) {
       }
     });
 
-    res.status(200).json({ message: "song removed", newPlaylist })
+    res.status(200).json(newPlaylist)
   }
   catch (err) {
-    res.status(500).json({ "message": err.message })
+    res.status(500).json(err.message)
     console.log(err);
   }
 }
@@ -127,12 +127,12 @@ export async function remove(req, res) {
       .findByIdAndDelete(req.params.id);
 
     if (!playlist) {
-      res.status(404).json({ "message": "Playlist not found" })
+      res.status(404).json("Playlist not found")
     }
-    res.status(200).json({ "message": "Deleted playlist" })
+    res.status(200).json("Playlist deleted")
   }
   catch (err) {
-    res.status(500).json({ "message": err })
+    res.status(500).json(err)
     console.log(err);
   }
 }

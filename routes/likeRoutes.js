@@ -1,16 +1,18 @@
 import express from 'express';
 import { artistTotalLikes, isLikedByUser, toggleLike } from '../controllers/likeController.js';
+import{protect} from '../middlewares/authMiddleware.js';
+
 import verifyToken from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
 router
   .route('/toggle')
-  .post(toggleLike);
+  .post(protect, toggleLike);
 
   router
-  .route('/artistTotalLikes/:artistId')
-  .get(artistTotalLikes);
+  .route('/artistTotalLikes')
+  .get(protect, artistTotalLikes);
 
 // router
 //   .route('/bySongId/:songId')
@@ -18,6 +20,6 @@ router
   
 router
   .route('/islikedByUser')
-  .post(isLikedByUser);
+  .post(protect, isLikedByUser);
 
 export default router;

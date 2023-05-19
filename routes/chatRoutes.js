@@ -1,13 +1,13 @@
 import express from 'express';
 import { addMessage, create, getByBand, remove, removeMessage } from '../controllers/conversationController.js';
-import verifyToken from '../middlewares/authMiddleware.js';
+import { protect } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
 
 router
   .route('/getbyBand/:bandId')
-  .get(getByBand);
+  .get(protect, getByBand);
 
 router
   .route('/create')

@@ -5,21 +5,24 @@ import user from "../models/user.js";
 
 
 export async function create(req, res) {
-  const { creatorId, title, genre, duration } = req.body;
+  var {title, genre } = req.body; //, duration
+  const creatorId = req.user.id
+  title = title.replace(/"/g, ''); // removing quotes
+  genre = genre.replace(/"/g, '');
   try {
     const newSong = await Song.create({
       title: title,
       genre: genre,
       filename: req.file.filename,
       creator: creatorId,
-      duration: duration
+      //duration: duration
     }).catch((err) => {
-      return res.status('400').json({ message: err.message });
+      return res.status(400).json( err.message );
     });
     newSong.populate('creator');
-    res.status(200).json({ message: "Song created successfully", newSong });
+    return res.status(200).json("Song created successfully");  /*, newSong */
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json(err.message);
   }
 }
 
@@ -72,13 +75,13 @@ export async function remove(req, res) {
     //delete the mp3 file also
 
     if (!song) {
-      res.status(404).json({ message: "song not found" })
+      res.status(404).json("song not found")
     }
-    res.status(200).json({ message: "song deleted successfully" })
+    res.status(200).json("song deleted successfully")
     //,"song": song})
   }
   catch (err) {
-    res.status(500).json({ "message": err.message })
+    res.status(500).json(err.message)
     console.log(err);
   }
 }
@@ -99,9 +102,9 @@ export async function searchSongs(req, res) {
       }
     }
     if (songs.length != 0) {
-      return res.status(200).json({ songs });
+      return res.status(200).json( songs );
     } else {
-      return res.status(200).json({ songs });
+      return res.status(200).json(songs);
     }
   }
   catch (err) {

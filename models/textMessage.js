@@ -12,7 +12,7 @@ const textMessageSchema = new Schema(
             ref: 'User',
             required: true
         },
-        conversation: {
+        conversationId: {
             type: Schema.Types.ObjectId,
             ref: 'Conversation'
         },

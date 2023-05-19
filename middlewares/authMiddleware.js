@@ -20,7 +20,6 @@ const verifyToken = (req, res, next) => {
 };
 
 export async function protect (req,res,next) {
-  console.log("ccccc")
   if(!req.headers.authorization){
       return res.status(302).json({success : false , message: "no auth"});
   }
@@ -30,7 +29,6 @@ export async function protect (req,res,next) {
   try {
       const decoded = jwt.verify(token,process.env.SECRET_KEY);
       console.log(decoded)
-     // const user = await User.findOne({"_id":decoded.id});
        const user = await User.findById(decoded.id);
        req.user = user;
        next();
