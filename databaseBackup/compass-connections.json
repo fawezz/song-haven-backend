@@ -1,0 +1,38 @@
+{
+  "type": "Compass Connections",
+  "version": {
+    "$numberInt": "1"
+  },
+  "connections": [
+    {
+      "id": "320ae751-c4af-4afb-878c-f18013de0f2c",
+      "connectionOptions": {
+        "connectionString": "mongodb://localhost:27017/espritgpt_db"
+      },
+      "favorite": {
+        "name": "chat-gpt",
+        "color": "color6"
+      },
+      "lastUsed": {
+        "$date": {
+          "$numberLong": "1684097777362"
+        }
+      }
+    },
+    {
+      "id": "ce2f4f5e-b7fe-4055-aa9f-0d4111b7620e",
+      "connectionOptions": {
+        "connectionString": "mongodb://localhost:27017/songhaven"
+      },
+      "favorite": {
+        "name": "songhaven",
+        "color": "color7"
+      },
+      "lastUsed": {
+        "$date": {
+          "$numberLong": "1690572901581"
+        }
+      }
+    }
+  ]
+}
